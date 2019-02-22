@@ -40,6 +40,55 @@ module.exports = function(router) {
   }
 
   /**
+   * Using the access token provided, check to make sure that
+   * you are, indeed, a sponsor.
+   */
+  function isSponsor(req, res, next){
+
+    var token = getToken(req);
+
+    UserController.getByToken(token, function(err, user){
+
+      if (err) {
+        return res.status(500).send(err);
+      }
+
+      if (user && user.sponsor){
+        req.user = user;
+        return next();
+      }
+
+      return res.status(401).send({
+        message: 'Get outta here, punk!'
+      });
+
+    });
+  }
+
+  /**
+   * Using the access token provided, check to make sure that
+   * you are, indeed, a sponsor OR admin
+   */
+  function isSponsorOrAdmin(req, res, next){
+    var token = getToken(req);
+
+    UserController.getByToken(token, function(err, user){
+
+      if (err || !user) {
+        return res.status(500).send(err);
+      }
+
+      if (user.admin || user.sponsor){
+        return next();
+      }
+
+      return res.status(401).send({
+        message: 'Get outta here, punk!'
+      });
+    });
+  }
+
+  /**
    * [Users API Only]
    *
    * Check that the id param matches the id encoded in the
@@ -358,6 +407,16 @@ module.exports = function(router) {
     var user = req.user;
     UserController.makeAdminById(id, user, defaultResponse(req, res));
   });
+
+  /**
+   * Make user a sponsor
+   */
+  router.post('/users/:id/makesponsor', isAdmin, function(req, res){
+    var id = req.params.id;
+    var user = req.user;
+    UserController.makeSponsorById(id, user, defaultResponse(req, res));
+  });
+
 
   /**
    * Demote user

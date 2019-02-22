@@ -1082,6 +1082,28 @@ UserController.makeAdminById = function (id, user, callback) {
 /**
  * [ADMIN ONLY]
  *
+ * Make user a sponsor
+ * @param  {String}   userId   User id of the user being made admin
+ * @param  {String}   user     User making this person admin
+ * @param  {Function} callback args(err, user)
+ */
+UserController.makeSponsorById = function(id, user, callback){
+  User.findOneAndUpdate({
+    _id: id,
+    verified: true
+  },{
+    $set: {
+      'sponsor': true
+    }
+  }, {
+    new: true
+  },
+  callback);
+};
+
+/**
+ * [ADMIN ONLY]
+ *
  * Remove user as admin
  * @param  {String}   userId   User id of the user removed as admin
  * @param  {String}   user     User removing this person as admin
