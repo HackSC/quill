@@ -195,12 +195,12 @@ module.exports = function(router) {
   // ---------------------------------------------
 
   /**
-   * [ADMIN ONLY]
+   * [SPONSOR/ADMIN ONLY]
    *
    * GET - Get all users, or a page at a time.
    * ex. Paginate with ?page=0&size=100
    */
-  router.get('/users', isAdmin, function(req, res){
+  router.get('/users', isSponsorOrAdmin, function(req, res){
     var query = req.query;
     var admin = req.user;
 
@@ -216,9 +216,9 @@ module.exports = function(router) {
   });
 
   /**
-   * [ADMIN ONLY]
+   * [SPONSOR/ADMIN ONLY]
    */
-  router.get('/users/stats', isAdmin, function(req, res){
+  router.get('/users/stats', isSponsorOrAdmin, function(req, res){
     UserController.getStats(defaultResponse(req, res));
   });
 

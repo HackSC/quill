@@ -1,7 +1,6 @@
 angular.module('reg')
-  .controller('SponsorsCtrl', [
+  .controller('SponsorsUsersCtrl', [
     '$scope',
     function($scope) {
       $scope.test = 'baller';
-      $scope.loading = true;
     }]);

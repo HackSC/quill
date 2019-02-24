@@ -3,13 +3,21 @@
     Sponsors
   </div>
 
-  <div class="ui stackable centered page grid">
-    <div class="column">
-      <div class="ui status segment">
-        <div class="small title">
-          Sponsor Stuff Here Soon
-        </div>
-      </div>
-    </div>
+  <div class="ui two item menu">
+      <a
+              class="item"
+              ui-sref="app.sponsors.stats"
+              ui-sref-active="active">
+          Stats
+      </a>
+
+      <a
+              class="item"
+              ui-sref="app.sponsors.users"
+              ui-sref-active="active">
+          Users
+      </a>
   </div>
+
+  <ui-view></ui-view>
 </div>
