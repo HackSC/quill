@@ -21,6 +21,7 @@ const SidebarCtrl = require('../views/sidebar/sidebarCtrl.js');
 const TeamCtrl = require('../views/team/teamCtrl.js');
 const JudgeCtrl = require('../views/judge/judgeCtrl.js');
 const VerifyCtrl = require('../views/verify/verifyCtrl.js');
+const SponsorsCtrl = require('../views/sponsorsPortal/sponsorsPortalCtrl.js');
 
 angular.module('reg')
   .config([
@@ -126,6 +127,11 @@ angular.module('reg')
             return SettingsService.getPublicSettings();
           }
         }
+      })
+      .state('app.sponsors', {
+        url: "/sponsors",
+        templateUrl: "views/sponsorsPortal/sponsorsPortal.html",
+        controller: 'SponsorsCtrl'
       })
       .state('app.admin', {
         views: {
