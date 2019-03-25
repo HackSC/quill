@@ -413,11 +413,11 @@ UserController.updateConfirmationById = function (id, confirmation, callback){
       });
     }
 
-    // You can only confirm acceptance if you're admitted and haven't declined.
+    // You can only confirm acceptance if you're admitted or waitlisted and haven't declined.
     User.findOneAndUpdate({
       '_id': id,
       'verified': true,
-      'status.admitted': true,
+      $or: [{"status.admitted": true}, {"status.waitlisted": true}],
       'status.declined': {$ne: true}
     },
       {
