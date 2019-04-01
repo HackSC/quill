@@ -24,44 +24,67 @@ const jwtClient = new google.auth.JWT(
     PRIVATE_KEY,
     scopes);
 
-google.options({
-    auth: jwtClient
+var drive = google.drive({
+  version: 'v3',
+  auth: jwtClient
 });
-
-var drive = google.drive('v3');
 
 // File system
 var fs = require('fs');
 
+// Stat tracking
+var downloadCount = 0;
+var errorCount = 0;
+var overallCount = 0;
+
+// Delay Promise
+function delay(duration) {
+	return new Promise(function(resolve, reject){
+		setTimeout(function(){
+			resolve();
+		}, duration)
+	});
+};
+
 // Get all users and download resumes
 User.find({}, (err, users) => {
   // Download resume for user if they have submitted
-  users.forEach((user) => {
+  overallCount = users.length;
+
+  users.forEach((user, index) => {
     if (user.status.submitted) {
       var resume = user.profile.resume;
 
-      // Skip test resumes
-      if (resume.id === '1') {
-        return;
-      }
-
       // Download resume to resumes folder
-      var dest = fs.createWriteStream('./resumes/' + user.email + '.pdf');
-      drive.files.get({
-        fileId: resume.id,
-        alt: 'media'
-      }, {
-        responseType: 'stream'
-      }, function(err, res) {
-       res.data
-         .on('end', () => {
-            console.log('Done');
-         })
-         .on('error', err => {
-            console.log('Error', err);
-         })
-         .pipe(dest);
-      });
+      delay(index * 1000).then(() => {
+        var dest = fs.createWriteStream('./resumes/' + user.email + '.pdf');
+        drive.files.get({
+          auth: jwtClient,
+          fileId: resume.id,
+          alt: 'media'
+        }, {
+          responseType: 'stream'
+        }, function(err, res) {
+          if (err) {
+            console.log('---------------------');
+            console.log(err);
+
+            errorCount++;
+            console.log(`Error (${errorCount}/${overallCount})`);
+            return;
+          }
+
+          res.data
+            .on('end', () => {
+              downloadCount++;
+               console.log(`Done (${downloadCount}/${overallCount})`);
+            })
+            .on('error', err => {
+              console.log('Error', err);
+            })
+            .pipe(dest);
+        });
+      })
     }
   })
 });
