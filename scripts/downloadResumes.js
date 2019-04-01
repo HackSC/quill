@@ -54,10 +54,12 @@ User.find({}, (err, users) => {
   users.forEach((user, index) => {
     if (user.status.submitted) {
       var resume = user.profile.resume;
+      var admitted = user.status.admitted;
 
       // Download resume to resumes folder
       delay(index * 1000).then(() => {
-        var dest = fs.createWriteStream('./resumes/' + user.email + '.pdf');
+        var path = (admitted) ? ('admitted/') : ('other/');
+        var dest = fs.createWriteStream('./resumes/' + path + user.email + '.pdf');
         drive.files.get({
           auth: jwtClient,
           fileId: resume.id,
