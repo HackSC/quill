@@ -266,83 +266,83 @@
             <p>
               {{ DASHBOARD.WAITLISTED }}
             </p>
+          </div>
 
+          <div
+                  ng-show="showTransportation"
+                  class="transportation">
+            <div class="ui dividing header">Transportation</div>
             <div
-                    ng-show="showTransportation"
-                    class="transportation">
-              <div class="ui dividing header">Transportation</div>
-                <div
-                        class="ui segment"
-                  ng-show="transportation != null">
-                  <div
-                          ng-show="transportation.note != undefined">
-                    {{transportation.note}}
-                  </div>
-                  <div
-                          ng-show="transportation.note == undefined || transportation.note == ''">
-                    <div class="ui dividing header">Bus Details</div>
-                    We are providing bus transportation from <strong>{{transportation.school}}</strong>.
-                    <br><br>
-                    Your pickup location will be <strong>{{transportation.location}}</strong>, and the bus will arrive at <strong>Friday, April 12, {{transportation.time}}</strong>.
-                    <!--USC only-->
-                    <span
-                      ng-show="transportation.school == 'University of Southern California'">
+                    class="ui segment"
+                    ng-show="transportation != null">
+              <div
+                      ng-show="transportation.note != undefined">
+                {{transportation.note}}
+              </div>
+              <div
+                      ng-show="transportation.note == undefined || transportation.note == ''">
+                <div class="ui dividing header">Bus Details</div>
+                We are providing bus transportation from <strong>{{transportation.school}}</strong>.
+                <br><br>
+                Your pickup location will be <strong>{{transportation.location}}</strong>, and the bus will arrive at <strong>Friday, April 12, {{transportation.time}}</strong>.
+                <!--USC only-->
+                <span
+                        ng-show="transportation.school == 'University of Southern California'">
                       This means there will be multiple buses running between campus and the venue at 15 minute intervals, with the last one leaving at 7:30 PM.
                       We recommend you arrive early so you don't miss dinner at 6 PM, and the opening ceremony at 7 PM!
                     </span>
-                    <br><br>
-                    Your bus coordinators are:
-                    <br>
-                    <span ng-repeat="coordinator in transportation.coordinators">
+                <br><br>
+                Your bus coordinators are:
+                <br>
+                <span ng-repeat="coordinator in transportation.coordinators">
                         <strong>{{coordinator.name}}</strong> - <a href="{{coordinator.email}}">{{coordinator.email}}</a>
                         <br>
                     </span>
-                    <br>
-                    Capacity is limited and seats are filled on a first come first serve basis, so we highly recommend you come to your location early!
-                    Buses will leave once capacity is filled or 15 minutes after arrival time, whichever happens first.
-                    If you have any questions, your bus coordinators are your main point of contact.
-                  </div>
-                  <br>
-                </div>
-
-                <div class="ui segment">
-                  <div class="ui dividing header">Self-Transportation Details</div>
-                  If you plan on arriving on your own, please set your destination to <strong>California Market Center, 110 E 9th St, Los Angeles, CA 90079</strong>.
-                  Check-in runs from <strong>Friday, April 12, 5:00 PM - 10:00 PM</strong> but we recommend arriving early so you don't miss dinner and our opening ceremony.
-                  We will be outside with signs and instructions, but in case you experience any issue please email us at <a href="mailto:hackers@hacksc.com">hackers@hacksc.com</a>.
-                  <br>
-                  For drivers, there is parking on-premise for total of $25. This price covers the entire duration of HackSC assuming you don't move your car out of the garage. The breakdown is as follows:
-                  <br>
-                  <div class="ui bulleted list parking">
-                      <div class="item">
-                        <div>Friday</div>
-                        <div class="list">
-                          <div class="item">Hours of Operation: 5:00 PM- 10:30 PM</div>
-                          <div class="item">Price: $7 Flat Fee</div>
-                        </div>
-                      </div>
-                      <div class="item">
-                        <div>Saturday</div>
-                        <div class="list">
-                          <div class="item">Hours of Operation: 7:00 AM - 7:00 PM</div>
-                          <div class="item">Price: $9 Flat Fee</div>
-                        </div>
-                      </div>
-                      <div class="item">
-                        <div>Sunday</div>
-                        <div class="list">
-                          <div class="item">Hours of Operation: 7:00 PM- 4:00 PM</div>
-                          <div class="item">Price: $9 Flat Fee</div>
-                          <dic class="item">Note: Exit only, No Entrance</dic>
-                        </div>
-                      </div>
-                    </div>
-                  What this means is that you may move your vehicle freely within the hours of operation, with the exception of Sunday. Each entrance will require you to pay the fee again.
-                </div>
-                Please note that we unfortunately cannot provide any form of reimbursement due to USC policy.
                 <br>
-                We can't wait to see you there!
+                Capacity is limited and seats are filled on a first come first serve basis, so we highly recommend you come to your location early!
+                Buses will leave once capacity is filled or 15 minutes after arrival time, whichever happens first.
+                If you have any questions, your bus coordinators are your main point of contact.
+              </div>
+              <br>
             </div>
+
+            <div class="ui segment">
+              <div class="ui dividing header">Self-Transportation Details</div>
+              If you plan on arriving on your own, please set your destination to <strong>California Market Center, 110 E 9th St, Los Angeles, CA 90079</strong>.
+              Check-in runs from <strong>Friday, April 12, 5:00 PM - 10:00 PM</strong> but we recommend arriving early so you don't miss dinner and our opening ceremony.
+              We will be outside with signs and instructions, but in case you experience any issue please email us at <a href="mailto:hackers@hacksc.com">hackers@hacksc.com</a>.
+              <br>
+              For drivers, there is parking on-premise for total of $25. This price covers the entire duration of HackSC assuming you don't move your car out of the garage. The breakdown is as follows:
+              <br>
+              <div class="ui bulleted list parking">
+                <div class="item">
+                  <div>Friday</div>
+                  <div class="list">
+                    <div class="item">Hours of Operation: 5:00 PM- 10:30 PM</div>
+                    <div class="item">Price: $7 Flat Fee</div>
+                  </div>
+                </div>
+                <div class="item">
+                  <div>Saturday</div>
+                  <div class="list">
+                    <div class="item">Hours of Operation: 7:00 AM - 7:00 PM</div>
+                    <div class="item">Price: $9 Flat Fee</div>
+                  </div>
+                </div>
+                <div class="item">
+                  <div>Sunday</div>
+                  <div class="list">
+                    <div class="item">Hours of Operation: 7:00 PM- 4:00 PM</div>
+                    <div class="item">Price: $9 Flat Fee</div>
+                    <dic class="item">Note: Exit only, No Entrance</dic>
+                  </div>
+                </div>
+              </div>
+              What this means is that you may move your vehicle freely within the hours of operation, with the exception of Sunday. Each entrance will require you to pay the fee again.
+            </div>
+            Please note that we unfortunately cannot provide any form of reimbursement due to USC policy.
+            <br>
+            We can't wait to see you there!
           </div>
 
           <div class="ui buttonPrimary button"
@@ -450,7 +450,6 @@
             <br>
             We can't wait to see you there!
           </div>
-        </div>
 
           <div class="ui buttonPrimary button"
                ui-sref="app.confirmation">
