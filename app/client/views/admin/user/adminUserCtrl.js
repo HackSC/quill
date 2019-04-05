@@ -54,7 +54,7 @@ angular.module('reg')
             }
 
             function populateBusStops() {
-                if ($scope.selectedUser.confirmation.busStop !== undefined && user.confirmation !== "") {
+                if ($scope.selectedUser.confirmation.busStop !== undefined && $scope.selectedUser.confirmation !== "") {
                     return;
                 }
 

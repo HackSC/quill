@@ -33,9 +33,11 @@ angular.module('reg')
         value: 'review',
         order: 'true',
       }];
-      $scope.sortOption = $stateParams.sort || 'timestamp:asc';
-
       $scope.APPLICATION = APPLICATION;
+
+      // Persistent Options
+      $scope.sortOption = $stateParams.sort || 'timestamp:asc';
+      $scope.queryText = $stateParams.query || '';
 
       // Semantic-UI moves modal content into a dimmer at the top level.
       // While this is usually nice, it means that with our routing will generate
@@ -96,10 +98,11 @@ angular.module('reg')
       };
 
       $scope.goUser = function($event, user){
+        console.log(user);
         $event.stopPropagation();
 
         $state.go('app.admin.user', {
-          id: user._id
+          id: user.id
         });
       };
 
