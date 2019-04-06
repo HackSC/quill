@@ -134,93 +134,94 @@ angular.module('reg')
         $scope.showTransportation = true;
         $scope.transportation = null;
 
+        var transportationInformation = {
+            "USC": {
+                school: "University of Southern California",
+                location: "W Jefferson Blvd & Trousdale Pkwy, Los Angeles, CA 90007",
+                time: "4:45 PM - 7:30 PM",
+                coordinators: [{
+                    email: "hsiaotuh@usc.edu",
+                    name: "Daniel Ho"
+                },{
+                    email: "lianwang@usc.edu",
+                    name: "Jane Wang"
+                }]
+            },
+            "Stanford": {
+                school: "Stanford University",
+                location: "473 Via Ortega Dr, Stanford, CA 94305",
+                time: "9:30 AM",
+                coordinators: [{
+                    email: "jsutaria@stanford.edu",
+                    name: "Jainil Sutaria"
+                }]
+            },
+            "Berkeley": {
+                school: "UC Berkeley",
+                location: "Springer Gateway, Berkeley, CA 94720",
+                time: "7:30 AM",
+                coordinators: [{
+                    email: "jenzou@berkeley.edu",
+                    name: "Jennifer Zou"
+                },{
+                    email: "sejalmohata@berkeley.edu",
+                    name: "Sejal Mohata"
+                }]
+            },
+            "UCSD": {
+                school: "UC San Diego",
+                location: "Lot P602, San Diego, CA 92161",
+                time: "1:30 PM",
+                coordinators: [{
+                    email: "stl005@ucsd.edu",
+                    name: "Stanley Lee"
+                },{
+                    email: "j7yang@ucsd.edu",
+                    name: "Jane Yang"
+                }]
+            },
+            "UC Irvine": {
+                school: "UC Irvine",
+                location: "Office of Admissions and Relations with Schools, University of California Irvine, 260 Aldrich Hall, Irvine, CA 9269",
+                time: "2:30 PM",
+                coordinators: [{
+                    email: "crystc6@uci.edu",
+                    name: "Crystal Cheung"
+                },{
+                    email: "rjmirand@uci.edu",
+                    name: "Ryan Miranda"
+                },{
+                    email: "lilyp3@uci.edu",
+                    name: "Lily Pham"
+                },{
+                    email: "sjng1@uci.edu",
+                    name: "Steve Ng"
+                }]
+            },
+            "UCLA": {
+                school: "UCLA",
+                location: "1 Charles E Young Dr N, Los Angeles, CA 90024",
+                time: "3:00 PM",
+                coordinators: [{
+                    email: "kylewong@g.ucla.edu",
+                    name: "Kyle Wong"
+                }]
+            },
+            "UCSB": {
+                school: "UC Santa Barbara",
+                location: "Lot 29, Isla Vista, CA 93117",
+                time: "2:30 PM",
+                coordinators: [{
+                    email: "jennifernlai@ucsb.edu",
+                    name: "Jennifer Lai"
+                }],
+                note: "Unfortunately, we are unable to provide bus transportation for UCSB. We're sorry about any inconveniences this may have caused, but still hope that you can join us at HackSC!"
+            },
+        };
+
         populateTransportation();
 
         function populateTransportation() {
-            var transportationInformation = {
-                "USC": {
-                    school: "University of Southern California",
-                    location: "W Jefferson Blvd & Trousdale Pkwy, Los Angeles, CA 90007",
-                    time: "5:00 PM - 7:30 PM",
-                    coordinators: [{
-                        email: "hsiaotuh@usc.edu",
-                        name: "Daniel Ho"
-                    },{
-                        email: "lianwang@usc.edu",
-                        name: "Jane Wang"
-                    }]
-                },
-                "Stanford": {
-                    school: "Stanford University",
-                    location: "473 Via Ortega Dr, Stanford, CA 94305",
-                    time: "9:30 AM",
-                    coordinators: [{
-                        email: "jsutaria@stanford.edu",
-                        name: "Jainil Sutaria"
-                    }]
-                },
-                "Berkeley": {
-                    school: "UC Berkeley",
-                    location: "Springer Gateway, Berkeley, CA 94720",
-                    time: "7:30 AM",
-                    coordinators: [{
-                        email: "jenzou@berkeley.edu",
-                        name: "Jennifer Zou"
-                    },{
-                        email: "sejalmohata@berkeley.edu",
-                        name: "Sejal Mohata"
-                    }]
-                },
-                "UCSD": {
-                    school: "UC San Diego",
-                    location: "Lot P602, San Diego, CA 92161",
-                    time: "1:30 PM",
-                    coordinators: [{
-                        email: "stl005@ucsd.edu",
-                        name: "Stanley Lee"
-                    },{
-                        email: "j7yang@ucsd.edu",
-                        name: "Jane Yang"
-                    }]
-                },
-                "UC Irvine": {
-                    school: "UC Irvine",
-                    location: "Office of Admissions and Relations with Schools, University of California Irvine, 260 Aldrich Hall, Irvine, CA 9269",
-                    time: "2:30 PM",
-                    coordinators: [{
-                        email: "crystc6@uci.edu",
-                        name: "Crystal Cheung"
-                    },{
-                        email: "rjmirand@uci.edu",
-                        name: "Ryan Miranda"
-                    },{
-                        email: "lilyp3@uci.edu",
-                        name: "Lily Pham"
-                    },{
-                        email: "sjng1@uci.edu",
-                        name: "Steve Ng"
-                    }]
-                },
-                "UCLA": {
-                    school: "UCLA",
-                    location: "1 Charles E Young Dr N, Los Angeles, CA 90024",
-                    time: "3:00 PM",
-                    coordinators: [{
-                        email: "kylewong@g.ucla.edu",
-                        name: "Kyle Wong"
-                    }]
-                },
-                "UCSB": {
-                    school: "UC Santa Barbara",
-                    location: "Lot 29, Isla Vista, CA 93117",
-                    time: "2:30 PM",
-                    coordinators: [{
-                        email: "jennifernlai@ucsb.edu",
-                        name: "Jennifer Lai"
-                    }],
-                    note: "Unfortunately, we are unable to provide bus transportation for UCSB. We're sorry about any inconveniences this may have caused, but still hope that you can join us at HackSC!"
-                },
-            };
 
             if(user.confirmation !== undefined && user.confirmation.needsTransportation && user.confirmation.busStop !== ""){
                 $scope.transportation = transportationInformation[user.confirmation.busStop];
@@ -229,4 +230,18 @@ angular.module('reg')
                 $scope.transportation = transportationInformation['USC'];
             }
         }
+
+        // -----------------------------------------------------
+        // Waivers
+        // -----------------------------------------------------
+        $scope.showWaivers = true;
+        $scope.waivers = [{
+            title: "Hackathon Waiver",
+            url: 'https://waiver.smartwaiver.com/e/iAi5Z6v6xsvBYwm7zQzMpi/',
+            note: 'Required'
+        },{
+            title: "Bus Waiver",
+            url: 'https://waiver.smartwaiver.com/e/pvRvSBjoWqwqF6uaiZH4b7/',
+            note: 'Only if you\'re taking our buses'
+        }];
   }]);

@@ -269,6 +269,16 @@
           </div>
 
           <div
+                  ng-show="showWaivers"
+                  class="waivers">
+            <div class="ui dividing header">Waivers</div>
+            <strong>Please fill out these waivers before HackSC!</strong>
+            <div ng-repeat="waiver in waivers">
+              <a href="{{waiver.url}}">{{waiver.title}}</a> ({{waiver.note}})
+            </div>
+          </div>
+
+          <div
                   ng-show="showTransportation"
                   class="transportation">
             <div class="ui dividing header">Transportation</div>
@@ -375,6 +385,16 @@
           </div>
 
           <div
+                  ng-show="showWaivers"
+                  class="waivers">
+            <div class="ui dividing header">Waivers</div>
+            <strong>Please fill out these waivers before HackSC!</strong>
+            <div ng-repeat="waiver in waivers">
+              <a href="{{waiver.url}}">{{waiver.title}}</a> ({{waiver.note}})
+            </div>
+          </div>
+
+          <div
                   ng-show="showTransportation"
                   class="transportation">
             <div class="ui dividing header">Transportation</div>
@@ -440,11 +460,10 @@
                   <div class="list">
                     <div class="item">Hours of Operation: 7:00 PM- 4:00 PM</div>
                     <div class="item">Price: $9 Flat Fee</div>
-                    <dic class="item">Note: Exit only, No Entrance</dic>
                   </div>
                 </div>
               </div>
-              What this means is that you may move your vehicle freely within the hours of operation, with the exception of Sunday. Each entrance will require you to pay the fee again.
+              What this means is that you may move your vehicle freely within the hours of operation. Each entrance will require you to pay the fee again.
             </div>
             Please note that we unfortunately cannot provide any form of reimbursement due to USC policy.
             <br>
