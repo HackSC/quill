@@ -32,14 +32,14 @@
       </div>
 
       <div class="ui checkbox">
-        <input type="checkbox" name="beginner">
+        <input type="checkbox" name="male" ng-model="filter.gender.male">
         <label>Male</label>
       </div>
 
       <br/>
 
       <div class="ui checkbox">
-        <input type="checkbox" name="beginner">
+        <input type="checkbox" name="female" ng-model="filter.gender.female">
         <label>Female</label>
       </div>
     </div>
@@ -50,52 +50,83 @@
       </div>
 
       <div class="ui checkbox">
-        <input type="checkbox" name="beginner">
+        <input type="checkbox" name="yr2019" ng-model="filter.year.yr2019">
         <label>2019</label>
       </div>
 
       <br/>
 
       <div class="ui checkbox">
-        <input type="checkbox" name="beginner">
+        <input type="checkbox" name="yr2020" ng-model="filter.year.yr2020">
         <label>2020</label>
       </div>
 
       <br/>
 
       <div class="ui checkbox">
-        <input type="checkbox" name="beginner">
+        <input type="checkbox" name="yr2021" ng-model="filter.year.yr2021">
         <label>2021</label>
       </div>
 
       <br/>
 
       <div class="ui checkbox">
-        <input type="checkbox" name="beginner">
+        <input type="checkbox" name="yr2022" ng-model="filter.year.yr2022">
         <label>2022</label>
       </div>
 
       <br/>
 
       <div class="ui checkbox">
-        <input type="checkbox" name="beginner">
+        <input type="checkbox" name="graduate" ng-model="filter.year.yrGraduate">
         <label>Graduate</label>
       </div>
     </div>
 
-    <div class="sixteen wide column">
-      <div class="ui right labeled left icon fluid input">
-        <i class="tags icon"></i>
-        <input type="text" placeholder="Enter skills">
-        <a class="ui tag label">
-          Add Skill
-        </a>
+      <div class="five wide column">
+        <div class="ui header">
+          Ethnicity
+        </div>
+
+        <div class="ui checkbox">
+          <input type="checkbox" name="whiteCaucasian" ng-model="filter.ethnicity.whiteCaucasian">
+
+          <label>White / Caucasian</label>
+        </div>
+
+        <div class="ui checkbox">
+          <input type="checkbox" name="blackOrAfricanAmerican" ng-model="filter.ethnicity.blackOrAfricanAmerican">
+
+          <label>Black or African American</label>
+        </div>
+
+        <div class="ui checkbox">
+          <input type="checkbox" name="nativeAmerican" ng-model="filter.ethnicity.nativeAmerican">
+
+          <label>Native American or Alaska Native</label>
+        </div>
+
+        <div class="ui checkbox">
+          <input type="checkbox" name="asianPacificIslander" ng-model="filter.ethnicity.asianPacificIslander">
+
+          <label>Asian / Pacific Islander</label>
+        </div>
+
+        <div class="ui checkbox">
+          <input type="checkbox" name="hispanic" ng-model="filter.ethnicity.hispanic">
+
+          <label>Hispanic / Latinx</label>
+        </div>
+
+        <div class="ui checkbox">
+          <input type="checkbox" name="multiracial" ng-model="filter.ethnicity.multiracial">
+
+          <label>Multiracial / Other</label>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="ui stackable grid">
-    <div class="three wide column">
+    <div class="sixteen wide column">
       <div class="ui header">
         Search
       </div>
@@ -121,9 +152,11 @@
         class="ui icon basic page button">
         {{page}}
       </button>
-
     </div>
-    <div id="table-container" class="thirteen wide column">
+  </div>
+
+  <div class="ui stackable grid">
+    <div id="table-container" class="sixteen wide column">
       <div class="ui header">
         Users
       </div>
@@ -143,11 +176,12 @@
               Status:
               <div
                 class="ui label">
-                {{selectedUser.status.name.toUpperCase()}}
+                {{selectedUser.status}}
               </div>
             </div>
+
             <p>
-              <strong> Reviewed by: </strong> {{selectedUser.status.reviewedBy ? selectedUser.status.reviewedBy : 'Not Reviewed'}}
+              <b>Checked In: </b> {{selectedUser.status.checkedIn}}
             </p>
           </div>
 

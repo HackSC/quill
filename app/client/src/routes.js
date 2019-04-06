@@ -144,7 +144,12 @@ angular.module('reg')
         controller: 'SponsorsStatsCtrl'
       })
       .state('app.sponsors.users', {
-        url: "/sponsors/users",
+        url: "/sponsors/users?" +
+          '&page' +
+          '&size' +
+          '&sort' +
+          '&query' +
+          '&filter',
         templateUrl: "views/sponsorsPortal/users/users.html",
         controller: 'SponsorsUsersCtrl'
       })

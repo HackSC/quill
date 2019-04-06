@@ -35,6 +35,24 @@ angular.module('reg')
         );
       },
 
+      // SPONSORS
+      getAllSponsors: function() {
+        return $http.get(base + '?sponsor=true')
+      },
+
+      getPageSponsors: function(page, size, sort, text, filter){
+        return $http.get(users + '?' + $.param(
+          {
+            sort: sort,
+            text: text,
+            page: page ? page : 0,
+            size: size ? size : 50,
+            filter: filter,
+            sponsor: true
+          })
+        );
+      },
+
       updateProfile: function(id, profile){
         return $http.put(base + id + '/profile', {
           profile: profile

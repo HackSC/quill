@@ -101,6 +101,11 @@ function calculateStats(){
       newStats.total = users.length;
 
       async.each(users, function(user, callback){
+        // IGNORE STATS FOR ADMINS AND SPONSORS
+        if (user.admin || user.sponsor) {
+          callback();
+          return;
+        }
 
         // Grab the email extension
         var email = user.email.split('@')[1];

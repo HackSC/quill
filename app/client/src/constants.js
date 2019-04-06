@@ -23,6 +23,7 @@ angular.module('reg')
         WAITLISTED_TITLE: 'Space is limited, but we want you to come!',
         WAITLISTED: '',
         DECLINED: 'We\'re sorry to hear that you won\'t be able to make it to HackSC 2019! We hope you see you again soon.',
+        SPONSOR_INTRO: 'Thank you for sponsoring HackSC 2019! This event could not be possible without your help and we want to thank you wholeheartedly for being a part of HackSC.\n\nAs part of your sponsorship package, your organization has access to our application sponsor portal which will let you filter through our applicants and attendants. If you have any difficulties or requests, don\'t hesitate to reach out to our organizers who will get you in contact with the right lead. Again, thank you for your sponsorship, we very much appreciate it!' 
     })
     .constant('APPLICATION', {
         ESSAY1_TITLE: 'Why do you want to attend HackSC?',

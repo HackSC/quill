@@ -209,6 +209,70 @@ UserController.getPage = function (query, admin, callback) {
   var searchText = query.text;
   var findQuery = {};
   var sortQuery = {};
+
+  var buffer = new Buffer(query.filter, 'base64');
+  var filter = JSON.parse(buffer.toString('ascii'));
+
+  if (query.sponsor) {
+    // Used by the sponsor portal
+    // No need to show any admins or other sponsors
+    // Only show submitted apps
+    findQuery['admin'] = false;
+    findQuery['sponsor'] = { "$in": [null, false]};
+    findQuery['status.submitted'] = true;
+  }
+
+  // APPLY FILTERS
+  if (filter !== undefined) {
+      // Experience
+      var experience = []
+
+      if (filter.experience.beginner) { experience.push('Beginner') }
+      if (filter.experience.intermediate) { experience.push('Intermediate') }
+      if (filter.experience.advanced) { experience.push('Advanced') }
+
+      if (experience.length >  0) {
+        findQuery['profile.experience'] = { "$in": experience };
+      }
+
+      // Gender
+      var gender = []
+
+      if (filter.gender.male) { gender.push('Male') }
+      if (filter.gender.female) { gender.push('Female') }
+
+      if (gender.length >  0) {
+        findQuery['profile.gender'] = { "$in": gender };
+      }
+
+      // Year
+      var year = []
+
+      if (filter.year.yr2019) { year.push('2019') }
+      if (filter.year.yr2020) { year.push('2020') }
+      if (filter.year.yr2021) { year.push('2021') }
+      if (filter.year.yr2022) { year.push('2022') }
+      if (filter.year.yrGraduate) { year.push('Graduate')}
+
+      if (year.length > 0) {
+        findQuery['profile.year'] = { "$in": year }
+      }
+
+      // Ethnicity
+      var ethnicity = []
+
+      if (filter.ethnicity.whiteCaucasian) { ethnicity.push("White / Caucasian") }
+      if (filter.ethnicity.blackOrAfricanAmerican) { ethnicity.push("Black or African American") }
+      if (filter.ethnicity.nativeAmerican) { ethnicity.push("Native American or Alaska Native") }
+      if (filter.ethnicity.asianPacificIslander) { ethnicity.push("Asian / Pacific Islander") }
+      if (filter.ethnicity.hispanic) { ethnicity.push("Hispanic / Latinx") }
+      if (filter.ethnicity.multiracial) { ethnicity.push("Multiracial / Other") }
+
+      if (ethnicity.length > 0) {
+        findQuery['profile.ethnicity'] = { "$in": ethnicity }
+      }
+  }
+
   if (query.sort === undefined || query.sort === '') {
     sortQuery['timestamp'] = 'asc';
   } else {
