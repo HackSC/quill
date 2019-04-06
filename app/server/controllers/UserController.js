@@ -221,7 +221,8 @@ UserController.getPage = function (query, admin, callback) {
         'profile.lastName': order,
       }
     } else if (squery === 'admin') {
-      findQuery.admin = order;
+      sortQuery['timestamp'] = 'asc';
+      findQuery['admin'] = true;
     } else if (squery === 'review') {
       findQuery['review.reviewers'] = {
         $elemMatch: {
@@ -247,12 +248,15 @@ UserController.getPage = function (query, admin, callback) {
     findQuery["$or"] = queries
   }
 
+  console.log(findQuery)
+
   User
       .aggregate()
       .addFields({
         "profile.name": {$concat: ["$profile.firstName", " ", "$profile.lastName"]},
       })
       .match(findQuery)
+      .sort(sortQuery)
       .skip(page * size)
       .limit(size)
       .exec(function (err, users) {

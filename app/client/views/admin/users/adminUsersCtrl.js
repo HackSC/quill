@@ -73,6 +73,7 @@ angular.module('reg')
         });
 
       $scope.sortBy = function(sortOption){
+        $stateParams.sort = sortOption;
         UserService
             .getPage($stateParams.page, $stateParams.size, sortOption, $stateParams.query)
             .then(response => {
@@ -81,6 +82,7 @@ angular.module('reg')
       };
 
       $scope.$watch('queryText', function(queryText){
+        $stateParams.queryText = queryText;
         UserService
           .getPage($stateParams.page, $stateParams.size, $stateParams.sort, queryText)
           .then(response => {
