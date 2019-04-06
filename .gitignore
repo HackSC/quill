@@ -20,3 +20,5 @@ scripts/custom.js
 .env
 willie.env
 
+# Ignore resumes folder
+resumes/
