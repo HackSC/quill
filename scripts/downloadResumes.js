@@ -1,5 +1,35 @@
 require('dotenv').load();
 
+// Organizer E-mails
+var organizers = [
+  "anushka@usc.edu",
+  "lharper@usc.edu",
+  "lianwang@usc.edu",
+  "aamarnat@usc.edu",
+  "hsiaotuh@usc.edu",
+  "chun960@usc.edu",
+  "bentonye@usc.edu",
+  "celebic@usc.edu",
+  "diyameht@usc.edu",
+  "ariellws@usc.edu",
+  "sacksm@usc.edu",
+  "wongkh@usc.edu",
+  "bigger@usc.edu",
+  "devikaku@usc.edu",
+  "fdunlap@usc.edu",
+  "margarrb@usc.edu",
+  "rapolu@usc.edu",
+  "emilyeli@usc.edu",
+  "calebtho@usc.edu",
+  "zeiders@usc.edu",
+  "hmangalj@usc.edu",
+  "ralphsun@usc.edu",
+  "kushell@usc.edu",
+  "alexanek@usc.edu",
+  "deleur@usc.edu",
+  "arjunvis@usc.edu",
+  "wwillie@usc.edu"
+]
 // Connect to MongoDB
 var mongoose = require('mongoose');
 var database = process.env.DATABASE || "mongodb://localhost:27017";
@@ -59,6 +89,11 @@ User.find({}, (err, users) => {
       // Download resume to resumes folder
       delay(index * 1000).then(() => {
         var path = (admitted) ? ('admitted/') : ('other/');
+
+        if (organizers.includes(user.email)) {
+          path = 'organizers/';
+        }
+        
         var dest = fs.createWriteStream('./resumes/' + path + user.email + '.pdf');
         drive.files.get({
           auth: jwtClient,
