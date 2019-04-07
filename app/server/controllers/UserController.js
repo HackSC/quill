@@ -248,8 +248,6 @@ UserController.getPage = function (query, admin, callback) {
     findQuery["$or"] = queries
   }
 
-  console.log(findQuery)
-
   User
       .aggregate()
       .addFields({
