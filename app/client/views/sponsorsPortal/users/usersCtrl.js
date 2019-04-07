@@ -12,6 +12,8 @@ angular.module('reg')
       $scope.sortOption = $stateParams.sort || 'timestamp:asc';
       $scope.queryText = $stateParams.query || '';
 
+      $scope.showFilter = false;
+
       if ($stateParams.filter) {
         $scope.filter = JSON.parse(window.atob($stateParams.filter));
       } else {
@@ -40,10 +42,17 @@ angular.module('reg')
             hispanic: false,
             multiracial: false
           },
+          status: {
+            submitted: false,
+            admitted: false,
+            waitlisted: false,
+            confirmed: false,
+            checkedIn: false
+          },
           skills: []
         }
       }
-      
+
       $scope.pages = [];
       $scope.users = [];
       $scope.sortOptions = [{

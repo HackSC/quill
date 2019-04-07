@@ -271,6 +271,14 @@ UserController.getPage = function (query, admin, callback) {
       if (ethnicity.length > 0) {
         findQuery['profile.ethnicity'] = { "$in": ethnicity }
       }
+
+      // Status
+      var status = []
+      if (filter.status.submitted) { findQuery['status.submitted'] = true; }
+      if (filter.status.admitted) { findQuery['status.admitted'] = true; }
+      if (filter.status.waitlisted) { findQuery['status.waitlisted'] = true; }
+      if (filter.status.confirmed) { findQuery['status.confirmed'] = true; }
+      if (filter.status.checkedIn) { findQuery['status.checkedIn'] = true; }
   }
 
   if (query.sort === undefined || query.sort === '') {

@@ -1,9 +1,21 @@
 <div class="ui segment">
 
   <div class="ui stackable grid">
+    <div class="twelve wide column middle aligned">
+      <div class="ui large header">
+        Filter Users
+      </div>
+
+      <p>Thank you for being a HackSC sponsor! Use this portal to apply various filters, search for skills, and more. Clicking "Export to CSV" will apply your filters and generate a CSV with all user details. If there are any difficulties, let us know!</p>
+    </div>
+
+    <div class="right aligned four wide column">
+      <button class="ui basic button">Export to CSV</button>
+    </div>
+
     <div class="three wide column">
-      <div class="ui header">
-        Filter
+      <div class="ui small header">
+        Experience
       </div>
 
       <div class="ui checkbox">
@@ -26,8 +38,8 @@
       </div>
     </div>
 
-    <div class="three wide column">
-      <div class="ui header">
+    <div class="two wide column">
+      <div class="ui small header">
         Gender
       </div>
 
@@ -44,8 +56,8 @@
       </div>
     </div>
 
-    <div class="three wide column">
-      <div class="ui header">
+    <div class="two wide column">
+      <div class="ui small header">
         Year
       </div>
 
@@ -83,77 +95,113 @@
       </div>
     </div>
 
-      <div class="five wide column">
-        <div class="ui header">
-          Ethnicity
-        </div>
+    <div class="five wide column">
+      <div class="ui small header">
+        Ethnicity
+      </div>
 
-        <div class="ui checkbox">
-          <input type="checkbox" name="whiteCaucasian" ng-model="filter.ethnicity.whiteCaucasian">
+      <div class="ui checkbox">
+        <input type="checkbox" name="whiteCaucasian" ng-model="filter.ethnicity.whiteCaucasian">
 
-          <label>White / Caucasian</label>
-        </div>
+        <label>White / Caucasian</label>
+      </div>
 
-        <div class="ui checkbox">
-          <input type="checkbox" name="blackOrAfricanAmerican" ng-model="filter.ethnicity.blackOrAfricanAmerican">
+      <div class="ui checkbox">
+        <input type="checkbox" name="blackOrAfricanAmerican" ng-model="filter.ethnicity.blackOrAfricanAmerican">
 
-          <label>Black or African American</label>
-        </div>
+        <label>Black or African American</label>
+      </div>
 
-        <div class="ui checkbox">
-          <input type="checkbox" name="nativeAmerican" ng-model="filter.ethnicity.nativeAmerican">
+      <div class="ui checkbox">
+        <input type="checkbox" name="nativeAmerican" ng-model="filter.ethnicity.nativeAmerican">
 
-          <label>Native American or Alaska Native</label>
-        </div>
+        <label>Native American or Alaska Native</label>
+      </div>
 
-        <div class="ui checkbox">
-          <input type="checkbox" name="asianPacificIslander" ng-model="filter.ethnicity.asianPacificIslander">
+      <div class="ui checkbox">
+        <input type="checkbox" name="asianPacificIslander" ng-model="filter.ethnicity.asianPacificIslander">
 
-          <label>Asian / Pacific Islander</label>
-        </div>
+        <label>Asian / Pacific Islander</label>
+      </div>
 
-        <div class="ui checkbox">
-          <input type="checkbox" name="hispanic" ng-model="filter.ethnicity.hispanic">
+      <div class="ui checkbox">
+        <input type="checkbox" name="hispanic" ng-model="filter.ethnicity.hispanic">
 
-          <label>Hispanic / Latinx</label>
-        </div>
+        <label>Hispanic / Latinx</label>
+      </div>
 
-        <div class="ui checkbox">
-          <input type="checkbox" name="multiracial" ng-model="filter.ethnicity.multiracial">
+      <div class="ui checkbox">
+        <input type="checkbox" name="multiracial" ng-model="filter.ethnicity.multiracial">
 
-          <label>Multiracial / Other</label>
-        </div>
+        <label>Multiracial / Other</label>
       </div>
     </div>
 
-    <div class="sixteen wide column">
-      <div class="ui header">
-        Search
-      </div>
-      <div class="ui form">
-        <div class="field">
-          <div class="ui icon fluid input">
-            <input type="text"
-                   placeholder="Search..."
-                   ng-model="queryText"
-                   ng-model-options="{debounce: 300}">
-              <i class="search icon"></i>
-          </div>
-        </div>
-
+    <div class="three wide column">
+      <div class="ui small header">
+        Status
       </div>
 
-      <div class="ui divider"></div>
+      <div class="ui checkbox">
+        <input type="checkbox" name="submitted" ng-model="filter.status.submitted">
 
-      <button
-        ng-repeat="page in pages"
-        ng-class="page == currentPage ? 'active pink' : ''"
-        ng-click="goToPage(page)"
-        class="ui icon basic page button">
-        {{page}}
-      </button>
+        <label>Submitted</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="submitted" ng-model="filter.status.admitted">
+
+        <label>Admitted</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="submitted" ng-model="filter.status.waitlisted">
+
+        <label>Waitlisted</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="submitted" ng-model="filter.status.confirmed">
+
+        <label>Confirmed</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="submitted" ng-model="filter.status.checkedIn">
+
+        <label>Checked In</label>
+      </div>
     </div>
   </div>
+
+  <div class="sixteen wide column">
+    <div class="ui header">
+      Search
+    </div>
+    <div class="ui form">
+      <div class="field">
+        <div class="ui icon fluid input">
+          <input type="text"
+                 placeholder="Search..."
+                 ng-model="queryText"
+                 ng-model-options="{debounce: 300}">
+            <i class="search icon"></i>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ui divider"></div>
+
+    <button
+      ng-repeat="page in pages"
+      ng-class="page == currentPage ? 'active pink' : ''"
+      ng-click="goToPage(page)"
+      class="ui icon basic page button">
+      {{page}}
+    </button>
+  </div>
+</div>
 
   <div class="ui stackable grid">
     <div id="table-container" class="sixteen wide column">
