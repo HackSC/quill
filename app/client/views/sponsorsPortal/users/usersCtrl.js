@@ -81,7 +81,13 @@ angular.module('reg')
 
       function updatePage(data){
         $scope.users = data.users;
-        $scope.currentPage = data.page;
+
+        if (data.totalPages > $scope.currentPage) {
+          $scope.currentPage = 0;
+        } else {
+          $scope.currentPage = data.page;
+        }
+
         $scope.pageSize = data.size;
 
         var p = [];
@@ -94,6 +100,11 @@ angular.module('reg')
       UserService
         .getPageSponsors($scope.currentPage, $scope.size, $scope.sortOption, $scope.queryText, window.btoa(JSON.stringify($scope.filter)))
         .then(response => {
+
+          if ($scope.currentPage > response.data.totalPages) {
+            $scope.currentPage = 0;
+          }
+
           updatePage(response.data);
         });
 
@@ -102,6 +113,11 @@ angular.module('reg')
         UserService
             .getPageSponsors($scope.currentPage, $scope.size, sortOption, $scope.queryText, window.btoa(JSON.stringify($scope.filter)))
             .then(response => {
+
+              if ($scope.currentPage > response.data.totalPages) {
+                $scope.currentPage = 0;
+              }
+
               updatePage(response.data);
             });
       };
@@ -112,6 +128,11 @@ angular.module('reg')
         UserService
           .getPageSponsors($scope.currentPage, $scope.size, $scope.sortOption, queryText, window.btoa(JSON.stringify($scope.filter)))
           .then(response => {
+
+            if ($scope.currentPage > response.data.totalPages) {
+              $scope.currentPage = 0;
+            }
+
             updatePage(response.data);
           });
       });
@@ -120,6 +141,12 @@ angular.module('reg')
         UserService
           .getPageSponsors($scope.currentPage, $scope.size, $scope.sortOption, $scope.queryText, window.btoa(JSON.stringify(filter)))
           .then(response => {
+
+            if ($scope.currentPage > response.data.totalPages) {
+              $scope.currentPage = 0;
+              alert($scope.currentPage);
+            }
+
             updatePage(response.data);
           });
       }, true);
