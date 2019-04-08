@@ -70,8 +70,8 @@ angular.module('reg')
         return $http.put(base + 'judging', {
           generalJudges: generalJudges,
           sponsorJudges: sponsorJudges,
-          generalJudgingCriteria: generalJudgingCategories,
-          sponsorJudgingCriteria: sponsorJudgingCategories,
+          generalJudgingCategories: generalJudgingCategories,
+          sponsorJudgingCategories: sponsorJudgingCategories,
           judgingCriteria: judgingCriteria,
           judgeGroups: judgeGroups,
         });

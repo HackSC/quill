@@ -37,19 +37,19 @@ SettingsController.getJudging = function(callback){
   Settings.getJudging(callback);
 };
 
-SettingsController.updateJudging = function(generalJudges, sponsorJudges, generalJudgingCriteria, sponsorJudgingCriteria, judgingCriteria, judgeGroups, callback){
+SettingsController.updateJudging = function(generalJudges, sponsorJudges, generalJudgingCategories, sponsorJudgingCategories, judgingCriteria, judgeGroups, callback){
   Settings
       .findOneAndUpdate({},{
         $set: {
           generalJudges: generalJudges,
           sponsorJudges: sponsorJudges,
-          generalJudgingCriteria: generalJudgingCriteria,
-          sponsorJudgingCriteria: sponsorJudgingCriteria,
+          generalJudgingCategories: generalJudgingCategories,
+          sponsorJudgingCategories: sponsorJudgingCategories,
           judgingCriteria: judgingCriteria,
           judgeGroups: judgeGroups,
         }
       }, {new: true})
-      .select('generalJudges sponsorJudges generalJudgingCriteria sponsorJudgingCriteria judgingCriteria judgeGroups')
+      .select('generalJudges sponsorJudges generalJudgingCategories sponsorJudgingCategories judgingCriteria judgeGroups')
       .exec(callback);
 };
 

@@ -1,5 +1,10 @@
 var mongoose = require('mongoose');
 
+var judgeGroup = {
+  name: String,
+  category: String,
+};
+
 /**
  * Settings Schema!
  *
@@ -24,7 +29,7 @@ var schema = new mongoose.Schema({
   },
   timeConfirm: {
     type: Number,
-    default: Date.now() + (2*31104000000) // Date of confirmation
+    default: Date.now() + (2 * 31104000000) // Date of confirmation
   },
   whitelistedEmails: {
     type: [String],
@@ -86,9 +91,19 @@ var schema = new mongoose.Schema({
     default: ['Technicality', 'Relevance', 'Presentation']
   },
   judgeGroups: {
-    type: [String],
+    type: [judgeGroup],
     select: false,
-    default: ['Malibu', 'Zuma', 'Hermosa', 'Manhattan', 'Paradise Cove', 'Santa Monica', 'Dockweiler', 'Venice', 'Redondo']
+    default: [
+      {name: 'Malibu', category: 'Entrepreneurship'},
+      {name: 'Zuma', category: 'Entrepreneurship'},
+      {name: 'Hermosa', category: 'Entrepreneurship'},
+      {name: 'Manhattan', category: 'Entertainment'},
+      {name: 'Paradise Cove', category: 'Entertainment'},
+      {name: 'Santa Monica', category: 'Entertainment'},
+      {name: 'Dockweiler', category: 'Transportation'},
+      {name: 'Venice', category: 'Transportation'},
+      {name: 'Redondo', category: 'Transportation'},
+    ],
   },
   transportation: [{ // TODO: implement this
     school: String,
@@ -107,11 +122,11 @@ var schema = new mongoose.Schema({
  * Review criteria are by default not included in settings.
  * @param  {Function} callback args(err, reviewCriteria)
  */
-schema.statics.getReview = function(callback){
+schema.statics.getReview = function (callback) {
   this
       .findOne({})
       .select('reviewers reviewCriteria admissions')
-      .exec(function(err, settings){
+      .exec(function (err, settings) {
         return callback(err, settings);
       });
 };
@@ -121,11 +136,11 @@ schema.statics.getReview = function(callback){
  * Judging criteria are by default not included in settings.
  * @param  {Function} callback args(err, reviewCriteria)
  */
-schema.statics.getJudging = function(callback){
+schema.statics.getJudging = function (callback) {
   this
       .findOne({})
       .select('generalJudges sponsorJudges generalJudgingCategories sponsorJudgingCategories judgingCriteria judgeGroups')
-      .exec(function(err, settings){
+      .exec(function (err, settings) {
         return callback(err, settings);
       });
 };
@@ -136,37 +151,37 @@ schema.statics.getJudging = function(callback){
  * Whitelist emails are by default not included in settings.
  * @param  {Function} callback args(err, emails)
  */
-schema.statics.getWhitelistedEmails = function(callback){
+schema.statics.getWhitelistedEmails = function (callback) {
   this
-    .findOne({})
-    .select('whitelistedEmails')
-    .exec(function(err, settings){
-      return callback(err, settings.whitelistedEmails);
-    });
+      .findOne({})
+      .select('whitelistedEmails')
+      .exec(function (err, settings) {
+        return callback(err, settings.whitelistedEmails);
+      });
 };
 
 /**
  * Get the open and close time for registration.
  * @param  {Function} callback args(err, times : {timeOpen, timeClose, timeConfirm})
  */
-schema.statics.getRegistrationTimes = function(callback){
+schema.statics.getRegistrationTimes = function (callback) {
   this
-    .findOne({})
-    .select('timeOpen timeClose timeConfirm')
-    .exec(function(err, settings){
-      callback(err, {
-        timeOpen: settings.timeOpen,
-        timeClose: settings.timeClose,
-        timeCloseUSC: settings.timeCloseUSC,
-        timeConfirm: settings.timeConfirm
+      .findOne({})
+      .select('timeOpen timeClose timeConfirm')
+      .exec(function (err, settings) {
+        callback(err, {
+          timeOpen: settings.timeOpen,
+          timeClose: settings.timeClose,
+          timeCloseUSC: settings.timeCloseUSC,
+          timeConfirm: settings.timeConfirm
+        });
       });
-    });
 };
 
-schema.statics.getPublicSettings = function(callback){
+schema.statics.getPublicSettings = function (callback) {
   this
-    .findOne({})
-    .exec(callback);
+      .findOne({})
+      .exec(callback);
 };
 
 module.exports = mongoose.model('Settings', schema);

@@ -196,11 +196,12 @@
             </textarea>
       </div>
       <div class="field">
-        <label>Judge Groups (Comma Separated)</label>
+        <label>Judge Groups (Group Name-Category) (Comma Separated)</label>
         <div
                 class="ui label"
                 ng-repeat="group in judgeGroups.replace(' ','').split(',')">
-          {{group}}
+          {{group.split('-')[0]}}
+          <div class="detail">{{group.split('-')[1]}}</div>
         </div>
         <textarea
                 class="ui input"
