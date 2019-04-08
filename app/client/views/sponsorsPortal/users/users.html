@@ -277,15 +277,30 @@
           <div>
             <div class="ui header">
               Status:
-              <div
-                class="ui label">
-                {{selectedUser.status}}
+              <div class="ui label purple" ng-if="selectedUser.status.submitted">
+                Submitted
+              </div>
+
+              <div class="ui label pink" ng-if="selectedUser.status.admitted">
+                Admitted
+              </div>
+
+              <div class="ui label red" ng-if="selectedUser.status.rejected">
+                Rejected
+              </div>
+
+              <div class="ui label blue" ng-if="selectedUser.status.waitlisted">
+                Waitlisted
+              </div>
+
+              <div class="ui label green" ng-if="selectedUser.status.confirmed">
+                Confirmed
+              </div>
+
+              <div class="ui label white" ng-if="selectedUser.status.checkedIn">
+                Checked In
               </div>
             </div>
-
-            <p>
-              <b>Checked In: </b> {{selectedUser.status.checkedIn}}
-            </p>
           </div>
 
           <div ng-repeat="section in selectedUser.sections">
