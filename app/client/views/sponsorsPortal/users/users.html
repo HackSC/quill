@@ -172,34 +172,47 @@
         <label>Checked In</label>
       </div>
     </div>
-  </div>
 
-  <div class="sixteen wide column">
-    <div class="ui header">
-      Search
-    </div>
-    <div class="ui form">
-      <div class="field">
-        <div class="ui icon fluid input">
-          <input type="text"
-                 placeholder="Search..."
-                 ng-model="queryText"
-                 ng-model-options="{debounce: 300}">
-            <i class="search icon"></i>
+    <div class="thirteen wide column">
+      <div class="ui header">
+        Search
+      </div>
+      <div class="ui form">
+        <div class="field">
+          <div class="ui icon fluid input">
+            <input type="text"
+                   placeholder="Search..."
+                   ng-model="queryText"
+                   ng-model-options="{debounce: 300}">
+              <i class="search icon"></i>
+          </div>
         </div>
       </div>
-
     </div>
 
-    <div class="ui divider"></div>
+    <div class="three wide column">
+      <div class="ui form">
+        <div class="field">
+          <label> Sort </label>
+          <select
+                  ng-model="sortOption" ng-change="sortBy(sortOption)">
+            <option ng-repeat="option in sortOptions" ng-value="option.value + ':'+ option.order">{{option.name}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
 
-    <button
-      ng-repeat="page in pages"
-      ng-class="page == currentPage ? 'active pink' : ''"
-      ng-click="goToPage(page)"
-      class="ui icon basic page button">
-      {{page}}
-    </button>
+    <div class="sixteen wide column">
+      <div class="ui divider"></div>
+
+      <button
+        ng-repeat="page in pages"
+        ng-class="page == currentPage ? 'active pink' : ''"
+        ng-click="goToPage(page)"
+        class="ui icon basic page button">
+        {{page}}
+      </button>
+    </div>
   </div>
 </div>
 

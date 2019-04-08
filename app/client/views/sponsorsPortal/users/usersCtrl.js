@@ -5,76 +5,62 @@ angular.module('reg')
   .controller('SponsorsUsersCtrl', [
     '$scope',
     '$state',
-    '$stateParams',
     'UserService',
-    function($scope, $state, $stateParams, UserService){
+    function($scope, $state, UserService){
       // Persistent Options
-      $scope.sortOption = $stateParams.sort || 'timestamp:asc';
-      $scope.queryText = $stateParams.query || '';
+      $scope.sortOption = 'timestamp:asc';
+      $scope.queryText = '';
+
+      $scope.currentPage = 0;
+      $scope.size = 50;
 
       $scope.showFilter = false;
 
-      if ($stateParams.filter) {
-        $scope.filter = JSON.parse(window.atob($stateParams.filter));
-      } else {
-        $scope.filter = {
-          experience: {
-            beginner: false,
-            intermediate: false,
-            advanced: false
-          },
-          gender: {
-            male: false,
-            female: false
-          },
-          year: {
-            'yr2022': false,
-            'yr2021': false,
-            'yr2020': false,
-            'yr2019': false,
-            'yrGraduate': false
-          },
-          ethnicity: {
-            whiteCaucasian: false,
-            blackOrAfricanAmerican: false,
-            nativeAmerican: false,
-            asianPacificIslander: false,
-            hispanic: false,
-            multiracial: false
-          },
-          status: {
-            submitted: false,
-            admitted: false,
-            waitlisted: false,
-            confirmed: false,
-            checkedIn: false
-          },
-          skills: []
-        }
+      $scope.filter = {
+        experience: {
+          beginner: false,
+          intermediate: false,
+          advanced: false
+        },
+        gender: {
+          male: false,
+          female: false
+        },
+        year: {
+          'yr2022': false,
+          'yr2021': false,
+          'yr2020': false,
+          'yr2019': false,
+          'yrGraduate': false
+        },
+        ethnicity: {
+          whiteCaucasian: false,
+          blackOrAfricanAmerican: false,
+          nativeAmerican: false,
+          asianPacificIslander: false,
+          hispanic: false,
+          multiracial: false
+        },
+        status: {
+          submitted: false,
+          admitted: false,
+          waitlisted: false,
+          confirmed: false,
+          checkedIn: false
+        },
+        skills: []
       }
 
       $scope.pages = [];
       $scope.users = [];
       $scope.sortOptions = [{
-        name: 'Default',
+        name: 'Timestamp',
         value: 'timestamp',
         order: 'asc'
       },{
         name: 'Name',
         value: 'profile.name',
         order: 'asc'
-      },{
-        name: 'Review Rating',
-        value: 'review.overallRating',
-        order: 'desc'
-      },{
-        name: 'Admin',
-        value: 'admin',
-        order: 'true'
-      },{
-        name: 'My Reviews',
-        value: 'review',
-        order: 'true',
       }];
 
       // Semantic-UI moves modal content into a dimmer at the top level.
@@ -106,48 +92,55 @@ angular.module('reg')
       }
 
       UserService
-        .getPageSponsors($stateParams.page, $stateParams.size, $stateParams.sort, $stateParams.query, window.btoa(JSON.stringify($scope.filter)))
+        .getPageSponsors($scope.currentPage, $scope.size, $scope.sortOption, $scope.queryText, window.btoa(JSON.stringify($scope.filter)))
         .then(response => {
           updatePage(response.data);
         });
 
       $scope.sortBy = function(sortOption){
-        $stateParams.sort = sortOption;
+        $stateParams.sortOption = sortOption;
         UserService
-            .getPageSponsors($stateParams.page, $stateParams.size, sortOption, $stateParams.query, window.btoa(JSON.stringify($scope.filter)))
+            .getPageSponsors($scope.currentPage, $scope.size, sortOption, $scope.queryText, window.btoa(JSON.stringify($scope.filter)))
             .then(response => {
               updatePage(response.data);
             });
       };
 
       $scope.$watch('queryText', function(queryText){
-        $stateParams.queryText = queryText;
+        $scope.queryText = queryText;
 
         UserService
-          .getPageSponsors($stateParams.page, $stateParams.size, $stateParams.sort, queryText, window.btoa(JSON.stringify($scope.filter)))
+          .getPageSponsors($scope.currentPage, $scope.size, $scope.sortOption, queryText, window.btoa(JSON.stringify($scope.filter)))
           .then(response => {
             updatePage(response.data);
           });
       });
 
       $scope.$watch('filter', function(filter) {
-        console.log(filter);
-
         UserService
-          .getPageSponsors($stateParams.page, $stateParams.size, $stateParams.sort, $stateParams.queryText, window.btoa(JSON.stringify(filter)))
+          .getPageSponsors($scope.currentPage, $scope.size, $scope.sortOption, $scope.queryText, window.btoa(JSON.stringify(filter)))
           .then(response => {
             updatePage(response.data);
           });
       }, true);
 
       $scope.goToPage = function(page){
+        $scope.currentPage = page;
+
+        UserService
+          .getPageSponsors(page, 50, $scope.sortOption, $scope.queryText, window.btoa(JSON.stringify($scope.filter)))
+          .then(response => {
+            updatePage(response.data);
+          });
+
+        /*
         $state.go('app.sponsors.users', {
           page: page,
           size: $stateParams.size || 50,
           sort: $scope.sortOption || $stateParams.sort,
           query: $scope.queryText || $stateParams.query,
           filter: window.btoa(JSON.stringify($scope.filter))
-        });
+        });*/
       };
 
       $scope.goUser = function($event, user){
