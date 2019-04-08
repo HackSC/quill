@@ -515,14 +515,14 @@ module.exports = function(router) {
 
   /**
    * [ADMIN ONLY]
-   * Get the judge criteria.
+   * Get the judging judges and criteria.
    *
    * res: {
    *   emails: [String]
    * }
    */
-  router.get('/settings/judge', isAdmin, function(req, res){
-    SettingsController.getJudge(defaultResponse(req, res));
+  router.get('/settings/judging', isAdmin, function(req, res){
+    SettingsController.getJudging(defaultResponse(req, res));
   });
 
   /**
@@ -534,10 +534,12 @@ module.exports = function(router) {
    * res: Settings
    *
    */
-  router.put('/settings/judge', isAdmin, function(req, res){
-    var judges = req.body.judges;
-    var judgeCriteria = req.body.judgeCriteria;
-    SettingsController.updateJudge(judges, judgeCriteria, defaultResponse(req, res));
+  router.put('/settings/judging', isAdmin, function(req, res){
+    var generalJudges = req.body.generalJudges;
+    var sponsorJudges = req.body.sponsorJudges;
+    var generalJudgingCriteria = req.body.generalJudgingCriteria;
+    var sponsorJudgingCriteria = req.body.sponsorJudgingCriteria;
+    SettingsController.updateJudging(generalJudges, sponsorJudges, generalJudgingCriteria, sponsorJudgingCriteria, defaultResponse(req, res));
   });
 
   /**

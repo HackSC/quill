@@ -30,11 +30,11 @@ var judging = {
         'Invalid Email',
       ],
     },
-    ratings: [Number],
+    scores: [Number],
     comments: String
   }],
 
-  overallRating: {
+  overallScore: {
     type: Number,
     default: 0,
   },

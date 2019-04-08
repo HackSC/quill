@@ -63,7 +63,7 @@ var schema = new mongoose.Schema({
   generalJudges: {
     type: Number,
     select: false,
-    default: 3
+    default: 1
   },
   sponsorJudges: {
     type: Number,
@@ -78,7 +78,7 @@ var schema = new mongoose.Schema({
   sponsorJudgingCriteria: {
     type: [String],
     select: false,
-    default: ['Sponsor 1: Most Impactful', 'Sponsor 2: Best Use API']
+    default: ['Sponsor 1: Most Impactful', 'Sponsor 2: Best Use API', 'Sponsor 2: Runner Up']
   },
   transportation: [{ // TODO: implement this
     school: String,

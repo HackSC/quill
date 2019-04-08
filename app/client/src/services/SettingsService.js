@@ -63,13 +63,15 @@ angular.module('reg')
           reviewCriteria: reviewCriteria
         });
       },
-      getJudge: function(){
-        return $http.get(base + 'judge')
+      getJudging: function(){
+        return $http.get(base + 'judging')
       },
-      updateJudge: function(judges, judgeCriteria){
-        return $http.put(base + 'judge', {
-          judges: judges,
-          judgeCriteria: judgeCriteria
+      updateJudging: function(generalJudges, sponsorJudges, generalJudgingCriteria, sponsorJudgingCriteria){
+        return $http.put(base + 'judging', {
+          generalJudges: generalJudges,
+          sponsorJudges: sponsorJudges,
+          generalJudgingCriteria: generalJudgingCriteria,
+          sponsorJudgingCriteria: sponsorJudgingCriteria,
         });
       },
       updateAdmissions: function(admissions){
