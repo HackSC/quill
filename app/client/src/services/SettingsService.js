@@ -66,12 +66,13 @@ angular.module('reg')
       getJudging: function(){
         return $http.get(base + 'judging')
       },
-      updateJudging: function(generalJudges, sponsorJudges, generalJudgingCriteria, sponsorJudgingCriteria){
+      updateJudging: function(generalJudges, sponsorJudges, generalJudgingCategories, sponsorJudgingCategories, judgingCriteria){
         return $http.put(base + 'judging', {
           generalJudges: generalJudges,
           sponsorJudges: sponsorJudges,
-          generalJudgingCriteria: generalJudgingCriteria,
-          sponsorJudgingCriteria: sponsorJudgingCriteria,
+          generalJudgingCriteria: generalJudgingCategories,
+          sponsorJudgingCriteria: sponsorJudgingCategories,
+          judgingCriteria: judgingCriteria,
         });
       },
       updateAdmissions: function(admissions){

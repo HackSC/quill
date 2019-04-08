@@ -70,15 +70,20 @@ var schema = new mongoose.Schema({
     select: false,
     default: 1
   },
-  generalJudgingCriteria: {
+  generalJudgingCategories: {
     type: [String],
     select: false,
     default: ['Entrepreneurship', 'Entertainment', 'Transportation']
   },
-  sponsorJudgingCriteria: {
+  sponsorJudgingCategories: {
     type: [String],
     select: false,
     default: ['Sponsor 1: Most Impactful', 'Sponsor 2: Best Use API', 'Sponsor 2: Runner Up']
+  },
+  judgingCriteria: {
+    type: [String],
+    select: false,
+    default: ['Technicality', 'Relevance', 'Presentation']
   },
   transportation: [{ // TODO: implement this
     school: String,
@@ -114,7 +119,7 @@ schema.statics.getReview = function(callback){
 schema.statics.getJudging = function(callback){
   this
       .findOne({})
-      .select('generalJudges sponsorJudges generalJudgingCriteria sponsorJudgingCriteria')
+      .select('generalJudges sponsorJudges generalJudgingCategories sponsorJudgingCategories judgingCriteria')
       .exec(function(err, settings){
         return callback(err, settings);
       });

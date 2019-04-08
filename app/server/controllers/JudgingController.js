@@ -14,7 +14,7 @@ var rankScore = function (callback) {
 };
 
 /**
- * Returns sorted ascending list of judges by their judged number
+ * Returns sorted ascending list of judges by their judge count
  */
 var rankCount = function (callback) {
     User.find({
@@ -26,7 +26,7 @@ var rankCount = function (callback) {
 };
 
 /**
- * Returns project list sorted by their rank
+ * Returns entire project list sorted by their rank
  * @param callback
  */
 JudgingController.getProjectsList = function (callback) {
@@ -34,71 +34,61 @@ JudgingController.getProjectsList = function (callback) {
 };
 
 /**
- * Returns reviewers list sorted by their total review count
+ * Returns entire judges list sorted by their total judge count
  * @param callback
  */
-ReviewController.getReviewersList = function (callback) {
-    rankCount(true, callback);
+JudgingController.getJudgesList = function (callback) {
+    rankCount(callback);
 };
 
 /**
- * Release all decisions for applicants
- * Top X amount is accepted (set in settings)
- * Rest is split evenly into Waitlist/Reject
+ * Creates a csv of all the table assignments
  * @param callback
  */
-ReviewController.release = function (callback) {
-    rankRating(function (err, users) {
-        if (err) {
-            return callback(err);
-        }
+JudgingController.exportTableAssignments = function (callback) {
 
-        // Get the number of acceptances
-        Settings.getPublicSettings(function (err, settings) {
-            var total = users.length;
-            var admissions = settings.admissions;
-            var waitlists = (total - admissions) / 2;
-
-            // Decide each student
-            users.forEach(function (user) {
-                var setOptions = {
-                    'status.admitted': false,
-                    'status.rejected': false,
-                    'status.waitlisted': false,
-                };
-                if (admissions > 0) {
-                    admissions--;
-                    setOptions['status.admitted'] = true;
-                } else if (waitlists > 0) {
-                    waitlists--;
-                    setOptions['status.waitlisted'] = true;
-                } else {
-                    setOptions['status.rejected'] = true;
-                }
-
-                // Update user
-                Settings.getRegistrationTimes(function (err, times) {
-                    setOptions['status.confirmBy'] = times.timeConfirm;
-                    User
-                        .findOneAndUpdate({
-                                _id: user.id,
-                                verified: true
-                            }, {
-                                $set: setOptions
-                            }, {
-                                new: true
-                            },
-                            function (err) {
-                                if (err) {
-                                    return callback(err);
-                                }
-                            });
-                });
-            });
-            callback();
-        });
-    });
 };
+
+/**
+ * Creates a csv of all the Judging Data
+ */
+JudgingController.exportJudgingData = function (callback) {
+
+};
+
+/**
+ * Clears the Project Table and stores the new file
+ * Assigns table number while saving data
+ * @param file
+ * @param callback
+ */
+JudgingController.parseSubmissionData = function (file, callback) {
+
+};
+
+/**
+ * Assigns the judges to the projects
+ * @param callback
+ */
+JudgingController.assignJudging = function (callback) {
+
+};
+
+/**
+ * Gets the projects to judge queue
+ * @param user
+ * @param callback
+ */
+JudgingController.getQueue = function (user, callback) {
+
+};
+
+
+JudgingController.updateJudging = function (projectId, judgeUser, scores, comments, callback) {
+
+};
+
+
 
 /**
  * Assigns user for review. Will not reassign, or assign more than allowed

@@ -39,8 +39,6 @@ var judging = {
     default: 0,
   },
 
-  prizes: [String]
-
 };
 
 var schema = new mongoose.Schema({
@@ -69,6 +67,10 @@ var schema = new mongoose.Schema({
 
   // for judging
   judging: judging,
+
+  awards: [String],
+
+  table: Number,
 });
 
-module.exports = mongoose.model('Projects', schema);
+module.exports = mongoose.model('Project', schema);

@@ -152,13 +152,13 @@
         <label>General Judging Categories (Comma Separated)</label>
         <div
                 class="ui label"
-                ng-repeat="criteria in generalJudgingCriteria.replace(' ','').split(',')">
-          {{criteria}}
+                ng-repeat="category in generalJudgingCategories.replace(' ','').split(',')">
+          {{category}}
         </div>
         <textarea
                 class="ui input"
                 type="text"
-                ng-model="generalJudgingCriteria">
+                ng-model="generalJudgingCategories">
             </textarea>
       </div>
       <div class="field">
@@ -173,13 +173,26 @@
         <label>Sponsor Judging Categories (Comma Separated)</label>
         <div
                 class="ui label"
-                ng-repeat="criteria in sponsorJudgingCriteria.replace(' ','').split(',')">
+                ng-repeat="category in sponsorJudgingCategories.replace(' ','').split(',')">
+          {{category}}
+        </div>
+        <textarea
+                class="ui input"
+                type="text"
+                ng-model="sponsorJudgingCategories">
+            </textarea>
+      </div>
+      <div class="field">
+        <label>Judging Criteria (Comma Separated)</label>
+        <div
+                class="ui label"
+                ng-repeat="criteria in judgingCriteria.replace(' ','').split(',')">
           {{criteria}}
         </div>
         <textarea
                 class="ui input"
                 type="text"
-                ng-model="sponsorJudgingCriteria">
+                ng-model="judgingCriteria">
             </textarea>
       </div>
 

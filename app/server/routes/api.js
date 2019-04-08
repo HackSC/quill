@@ -537,9 +537,10 @@ module.exports = function(router) {
   router.put('/settings/judging', isAdmin, function(req, res){
     var generalJudges = req.body.generalJudges;
     var sponsorJudges = req.body.sponsorJudges;
-    var generalJudgingCriteria = req.body.generalJudgingCriteria;
-    var sponsorJudgingCriteria = req.body.sponsorJudgingCriteria;
-    SettingsController.updateJudging(generalJudges, sponsorJudges, generalJudgingCriteria, sponsorJudgingCriteria, defaultResponse(req, res));
+    var generalJudgingCategories = req.body.generalJudgingCategories;
+    var sponsorJudgingCategories = req.body.sponsorJudgingCategories;
+    var judgingCriteria = req.body.judgingCriteria;
+    SettingsController.updateJudging(generalJudges, sponsorJudges, generalJudgingCategories, sponsorJudgingCategories, judgingCriteria, defaultResponse(req, res));
   });
 
   /**
