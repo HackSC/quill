@@ -237,16 +237,44 @@ var review = {
         ratings: [Number],
         comments: String
     }],
+
     overallRating: {
         type: Number,
         default: 0,
     },
+
+    // inconsistent naming but kill me later -Daniel
     reviewQueue: [String],
+
     reviewCount: {
         type: Number,
         default: 0
     },
+
     select: false,
+};
+
+var judging = {
+    role: {
+        type: String,
+        enum: {
+            values: [
+                'General',
+                'Sponsor',
+                'Both',
+            ],
+        }
+    },
+
+    categories: [String],
+
+    queue: [String],
+
+    count: {
+        type: Number,
+        default: 0
+    }
+
 };
 
 // define the schema for our admin model
@@ -269,6 +297,12 @@ var schema = new mongoose.Schema({
     },
 
     admin: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
+
+    judge: {
         type: Boolean,
         required: true,
         default: false,
@@ -322,7 +356,15 @@ var schema = new mongoose.Schema({
 
     status: status,
 
+    /**
+     * Only Admins are allowed to review
+     */
     review: review,
+
+    /**
+     * Only Judges are allowed to review
+     */
+    judging: judging,
 },{
     toObject: { virtuals: true },
     toJSON: { virtuals: true }

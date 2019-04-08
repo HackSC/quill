@@ -60,15 +60,25 @@ var schema = new mongoose.Schema({
     type: Number,
     default: 800
   },
-  judges: {
+  generalJudges: {
     type: Number,
     select: false,
     default: 3
   },
-  judgeCriteria: {
+  sponsorJudges: {
+    type: Number,
+    select: false,
+    default: 1
+  },
+  generalJudgingCriteria: {
     type: [String],
     select: false,
-    default: ['Entrepreneurship', 'Entertainment', 'Transportation', 'Technicality', 'Creativity', 'Impact']
+    default: ['Entrepreneurship', 'Entertainment', 'Transportation']
+  },
+  sponsorJudgingCriteria: {
+    type: [String],
+    select: false,
+    default: ['Sponsor 1: Most Impactful', 'Sponsor 2: Best Use API']
   },
   transportation: [{ // TODO: implement this
     school: String,
@@ -97,14 +107,14 @@ schema.statics.getReview = function(callback){
 };
 
 /**
- * Get the list of review criteria
- * Review criteria are by default not included in settings.
+ * Get the list of judging criteria
+ * Judging criteria are by default not included in settings.
  * @param  {Function} callback args(err, reviewCriteria)
  */
-schema.statics.getJudge = function(callback){
+schema.statics.getJudging = function(callback){
   this
       .findOne({})
-      .select('judges judgeCriteria')
+      .select('generalJudges sponsorJudges generalJudgingCriteria sponsorJudgingCriteria')
       .exec(function(err, settings){
         return callback(err, settings);
       });
