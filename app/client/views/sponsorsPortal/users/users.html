@@ -10,8 +10,8 @@
     </div>
 
     <div class="right aligned four wide column">
-      <button class="ui basic button">Export to CSV</button>
-    </div>
+      <a class="ui basic button" ng-href="{{csvLink()}}" target="_self">Export to CSV</a>
+    </div> 
 
     <div class="three wide column">
       <div class="ui small header">
@@ -95,7 +95,7 @@
       </div>
     </div>
 
-    <div class="five wide column">
+    <div class="four wide column">
       <div class="ui small header">
         Ethnicity
       </div>
@@ -137,7 +137,7 @@
       </div>
     </div>
 
-    <div class="three wide column">
+    <div class="two wide column">
       <div class="ui small header">
         Status
       </div>
@@ -173,6 +173,47 @@
       </div>
     </div>
 
+    <div class="two wide column">
+      <div class="ui small header">
+        Role
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="developer" ng-model="filter.role.developer">
+
+        <label>Developer</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="designer" ng-model="filter.role.designer">
+
+        <label>Designer</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="productManager" ng-model="filter.role.productManager">
+
+        <label>Product Manager</label>
+      </div>
+    </div>
+
+    <div class="sixteen wide column">
+      <div class="ui header">
+        Skills
+      </div>
+      <div class="ui form">
+        <div class="field">
+          <div class="ui icon fluid input">
+            <input type="text"
+                   placeholder="Search..."
+                   ng-model="queryText"
+                   ng-model-options="{debounce: 300}">
+              <i class="search icon"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="thirteen wide column">
       <div class="ui header">
         Search
@@ -192,8 +233,9 @@
 
     <div class="three wide column">
       <div class="ui form">
+        <div class="ui header"> Sort </div>
+
         <div class="field">
-          <label> Sort </label>
           <select
                   ng-model="sortOption" ng-change="sortBy(sortOption)">
             <option ng-repeat="option in sortOptions" ng-value="option.value + ':'+ option.order">{{option.name}}</option>

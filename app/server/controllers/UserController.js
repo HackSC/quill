@@ -279,6 +279,12 @@ UserController.getPage = function (query, admin, callback) {
       if (filter.status.waitlisted) { findQuery['status.waitlisted'] = true; }
       if (filter.status.confirmed) { findQuery['status.confirmed'] = true; }
       if (filter.status.checkedIn) { findQuery['status.checkedIn'] = true; }
+
+      // Role
+      var role = []
+      if (filter.role.developer) { findQuery['profile.role.developer'] = true; }
+      if (filter.role.designer) { findQuery['profile.role.designer'] = true; }
+      if (filter.role.productManager) { findQuery['profile.role.productManager'] = true; }
   }
 
   if (query.sort === undefined || query.sort === '') {
@@ -392,6 +398,191 @@ UserController.getPage = function (query, admin, callback) {
 
       });
 };
+
+/**
+ * Get a CSV of user data with filters applied
+ * @param query
+ * @param admin
+ * @param req
+ * @param res
+ */
+UserController.getCSV = function (query, admin, req, res) {
+  var searchText = query.text;
+  var findQuery = {
+    'admin': false,
+    'sponsor': {
+      '$in': [null, false]
+    },
+    'status.submitted': true
+  };
+
+  var sortQuery = {};
+
+  var buffer = new Buffer(query.filter, 'base64');
+  var filter = JSON.parse(buffer.toString('ascii'));
+
+  // APPLY FILTERS
+  if (filter !== undefined) {
+      // Experience
+      var experience = []
+
+      if (filter.experience.beginner) { experience.push('Beginner') }
+      if (filter.experience.intermediate) { experience.push('Intermediate') }
+      if (filter.experience.advanced) { experience.push('Advanced') }
+
+      if (experience.length >  0) {
+        findQuery['profile.experience'] = { "$in": experience };
+      }
+
+      // Gender
+      var gender = []
+
+      if (filter.gender.male) { gender.push('Male') }
+      if (filter.gender.female) { gender.push('Female') }
+
+      if (gender.length >  0) {
+        findQuery['profile.gender'] = { "$in": gender };
+      }
+
+      // Year
+      var year = []
+
+      if (filter.year.yr2019) { year.push('2019') }
+      if (filter.year.yr2020) { year.push('2020') }
+      if (filter.year.yr2021) { year.push('2021') }
+      if (filter.year.yr2022) { year.push('2022') }
+      if (filter.year.yrGraduate) { year.push('Graduate')}
+
+      if (year.length > 0) {
+        findQuery['profile.year'] = { "$in": year }
+      }
+
+      // Ethnicity
+      var ethnicity = []
+
+      if (filter.ethnicity.whiteCaucasian) { ethnicity.push("White / Caucasian") }
+      if (filter.ethnicity.blackOrAfricanAmerican) { ethnicity.push("Black or African American") }
+      if (filter.ethnicity.nativeAmerican) { ethnicity.push("Native American or Alaska Native") }
+      if (filter.ethnicity.asianPacificIslander) { ethnicity.push("Asian / Pacific Islander") }
+      if (filter.ethnicity.hispanic) { ethnicity.push("Hispanic / Latinx") }
+      if (filter.ethnicity.multiracial) { ethnicity.push("Multiracial / Other") }
+
+      if (ethnicity.length > 0) {
+        findQuery['profile.ethnicity'] = { "$in": ethnicity }
+      }
+
+      // Status
+      var status = []
+      if (filter.status.submitted) { findQuery['status.submitted'] = true; }
+      if (filter.status.admitted) { findQuery['status.admitted'] = true; }
+      if (filter.status.waitlisted) { findQuery['status.waitlisted'] = true; }
+      if (filter.status.confirmed) { findQuery['status.confirmed'] = true; }
+      if (filter.status.checkedIn) { findQuery['status.checkedIn'] = true; }
+
+      // Role
+      var role = []
+      if (filter.role.developer) { findQuery['profile.role.developer'] = true; }
+      if (filter.role.designer) { findQuery['profile.role.designer'] = true; }
+      if (filter.role.productManager) { findQuery['profile.role.productManager'] = true; }
+  }
+
+  if (query.sort === undefined || query.sort === '') {
+    sortQuery['timestamp'] = 'asc';
+  } else {
+    // for some reason name virtual doesn't work
+    var squery = query.sort.split(':')[0];
+    var order = query.sort.split(':')[1];
+    if (squery === 'profile.name') {
+      sortQuery = {
+        'profile.firstName': order,
+        'profile.lastName': order,
+      }
+    } else if (squery === 'admin') {
+      sortQuery['timestamp'] = 'asc';
+      findQuery['admin'] = true;
+    } else if (squery === 'review') {
+      findQuery['review.reviewers'] = {
+        $elemMatch: {
+          email: admin.email,
+        }
+      };
+      // sort in decreasing order
+      sortQuery['review.overallRating'] = 'desc';
+    } else {
+      sortQuery[squery] = order;
+    }
+  }
+
+  if (searchText.length > 0) {
+    var queries = [];
+    var re = new RegExp(searchText, 'i');
+    queries.push({email: re});
+    queries.push({'profile.name': re});
+    queries.push({'teamCode': re});
+    queries.push({'profile.school': re});
+    queries.push({'profile.year': re});
+
+    findQuery["$or"] = queries
+  }
+
+  User
+      .aggregate()
+      .addFields({
+        "profile.name": {$concat: ["$profile.firstName", " ", "$profile.lastName"]},
+      })
+      .match(findQuery)
+      .sort(sortQuery)
+      .exec(function (err, users) {
+        if (err || !users) {
+          return res.json({error: err});
+        }
+
+        var csvResponse = "";
+
+        // Return CSV to user
+        csvResponse += 'Email,Name,Gender,Ethnicity,School,Year,Major,Experience,Resume,Skills,Role,LinkedIn,GitHub,Other Links\n';
+
+        users.forEach(user => {
+          var rolesl = [];
+          var roles = '';
+
+          if (user.profile.role) {
+            if(user.profile.role.developer) rolesl.push("Developer");
+            if(user.profile.role.designer) rolesl.push("Designer");
+            if(user.profile.role.productManager) rolesl.push("Product Manager");
+            var roles = rolesl.join(',');
+          }
+
+          var info = [
+            user.email,
+            user.profile.name,
+            user.profile.gender,
+            user.profile.ethnicity,
+            user.profile.school,
+            user.profile.year,
+            user.profile.major,
+            user.profile.experience,
+            user.profile.resume.link,
+            user.profile.skills,
+            roles,
+            user.profile.linkedin,
+            user.profile.github,
+            user.profile.other
+          ];
+
+          info = info.map(val => {
+            if(val !== undefined && val !== '')
+              return '\"' + val + '\"';
+            return '';
+          });
+          csvResponse += info.join(',') + '\n';
+        });
+
+        res.setHeader('Content-disposition', 'attachment; filename=hacksc-data.csv');
+        res.set('Content-Type', 'text/csv');
+        return res.status(200).send(csvResponse);
+      });
+}
 
 /**
  * Get a user by id.

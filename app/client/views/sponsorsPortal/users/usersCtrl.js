@@ -6,7 +6,8 @@ angular.module('reg')
     '$scope',
     '$state',
     'UserService',
-    function($scope, $state, UserService){
+    'Session',
+    function($scope, $state, UserService, Session){
       // Persistent Options
       $scope.sortOption = 'timestamp:asc';
       $scope.queryText = '';
@@ -48,6 +49,11 @@ angular.module('reg')
           confirmed: false,
           checkedIn: false
         },
+        role: {
+          developer: false,
+          designer: false,
+          productManager: false
+        },
         skills: []
       }
 
@@ -82,7 +88,7 @@ angular.module('reg')
       function updatePage(data){
         $scope.users = data.users;
 
-        if (data.totalPages > $scope.currentPage) {
+        if (data.totalPages < $scope.currentPage) {
           $scope.currentPage = 0;
         } else {
           $scope.currentPage = data.page;
@@ -144,7 +150,19 @@ angular.module('reg')
 
             if ($scope.currentPage > response.data.totalPages) {
               $scope.currentPage = 0;
-              alert($scope.currentPage);
+            }
+
+            updatePage(response.data);
+          });
+      }, true);
+
+      $scope.$watch('sortOption', function(sortOption) {
+        UserService
+          .getPageSponsors($scope.currentPage, $scope.size, sortOption, $scope.queryText, window.btoa(JSON.stringify($scope.filter)))
+          .then(response => {
+
+            if ($scope.currentPage > response.data.totalPages) {
+              $scope.currentPage = 0;
             }
 
             updatePage(response.data);
@@ -159,15 +177,6 @@ angular.module('reg')
           .then(response => {
             updatePage(response.data);
           });
-
-        /*
-        $state.go('app.sponsors.users', {
-          page: page,
-          size: $stateParams.size || 50,
-          sort: $scope.sortOption || $stateParams.sort,
-          query: $scope.queryText || $stateParams.query,
-          filter: window.btoa(JSON.stringify($scope.filter))
-        });*/
       };
 
       $scope.goUser = function($event, user){
@@ -274,4 +283,17 @@ angular.module('reg')
       }
 
       $scope.selectUser = selectUser;
+
+      $scope.csvLink = function() {
+        var params = $.param(
+          {
+            sort: $scope.sortOption,
+            text: $scope.queryText,
+            token: Session.getToken(),
+            filter: window.btoa(JSON.stringify($scope.filter))
+          }
+        );
+
+        return '/api/users/csv?' + params;
+      }
     }]);

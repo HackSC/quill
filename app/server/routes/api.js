@@ -217,6 +217,34 @@ module.exports = function(router) {
 
   /**
    * [SPONSOR/ADMIN ONLY]
+   *
+   * GET - Get a CSV of users with filters applied
+   */
+  router.get('/users/csv', function(req, res, next) {
+    var token = req.query.token;
+
+    UserController.getByToken(token, function(err, user){
+      if (err || !user) {
+        return res.status(500).send(err);
+      }
+
+      if (user.admin || user.sponsor){
+        return next();
+      }
+
+      return res.status(401).send({
+        message: 'Get outta here, punk!'
+      });
+    });
+  }, function(req, res){
+    var query = req.query;
+    var admin = req.user;
+
+    UserController.getCSV(query, admin, req, res);
+  });
+
+  /**
+   * [SPONSOR/ADMIN ONLY]
    */
   router.get('/users/stats', isSponsorOrAdmin, function(req, res){
     UserController.getStats(defaultResponse(req, res));
