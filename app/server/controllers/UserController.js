@@ -248,6 +248,44 @@ UserController.getPage = function (query, admin, callback) {
     findQuery["$or"] = queries
   }
 
+  var getStatus = function (user) {
+
+    if(user.status.checkedIn) {
+      return 'checked in';
+    }
+
+    if (user.status.declined) {
+      return "declined";
+    }
+
+    if (user.status.confirmed) {
+      return "confirmed";
+    }
+
+    if (user.status.admitted) {
+      return "admitted";
+    }
+
+    if (user.status.rejected) {
+      return "rejected";
+    }
+
+    if (user.status.waitlisted) {
+      return "waitlisted";
+    }
+
+    if (user.status.submitted) {
+      return "submitted";
+    }
+
+    if (!user.verified) {
+      return "unverified";
+    }
+
+    return "incomplete";
+
+  };
+
   User
       .aggregate()
       .addFields({
@@ -267,6 +305,10 @@ UserController.getPage = function (query, admin, callback) {
           if (err) {
             return callback(err);
           }
+
+          users.forEach(user => {
+            user.status.name = getStatus(user);
+          });
 
           return callback(null, {
             users: users,

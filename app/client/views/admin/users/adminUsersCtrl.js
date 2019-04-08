@@ -100,11 +100,10 @@ angular.module('reg')
       };
 
       $scope.goUser = function($event, user){
-        console.log(user);
         $event.stopPropagation();
 
         $state.go('app.admin.user', {
-          id: user.id
+          id: user._id
         });
       };
 
