@@ -11,7 +11,7 @@
 
     <div class="right aligned four wide column">
       <a class="ui basic button" ng-href="{{csvLink()}}" target="_self">Export to CSV</a>
-    </div> 
+    </div>
 
     <div class="three wide column">
       <div class="ui small header">
@@ -206,7 +206,7 @@
           <div class="ui icon fluid input">
             <input type="text"
                    placeholder="Search..."
-                   ng-model="queryText"
+                   ng-model="filter.skills"
                    ng-model-options="{debounce: 300}">
               <i class="search icon"></i>
           </div>

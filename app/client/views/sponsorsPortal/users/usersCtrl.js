@@ -54,7 +54,7 @@ angular.module('reg')
           designer: false,
           productManager: false
         },
-        skills: []
+        skills: ""
       }
 
       $scope.pages = [];

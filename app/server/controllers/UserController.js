@@ -326,6 +326,22 @@ UserController.getPage = function (query, admin, callback) {
     findQuery["$or"] = queries
   }
 
+  // Search by skills
+  if (filter.skills !== "") {
+    var skillQueries = filter.skills.split(",");
+    skillQueries = skillQueries.map((skill) => {
+      return skill.toLowerCase().trim();
+    })
+
+    var skillQueriesRegEx = [];
+    skillQueries.forEach((skill) => {
+      var re = new RegExp(skill, 'i');
+      skillQueriesRegEx.push({'profile.skills': re});
+    })
+
+    findQuery["$and"] = skillQueriesRegEx;
+  }
+  
   var getStatus = function (user) {
 
     if(user.status.checkedIn) {
@@ -523,6 +539,22 @@ UserController.getCSV = function (query, admin, req, res) {
     queries.push({'profile.year': re});
 
     findQuery["$or"] = queries
+  }
+
+  // Search by skills
+  if (filter.skills !== "") {
+    var skillQueries = filter.skills.split(",");
+    skillQueries = skillQueries.map((skill) => {
+      return skill.toLowerCase().trim();
+    })
+
+    var skillQueriesRegEx = [];
+    skillQueries.forEach((skill) => {
+      var re = new RegExp(skill, 'i');
+      skillQueriesRegEx.push({'profile.skills': re});
+    })
+
+    findQuery["$and"] = skillQueriesRegEx;
   }
 
   User
