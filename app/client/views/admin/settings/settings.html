@@ -195,6 +195,19 @@
                 ng-model="judgingCriteria">
             </textarea>
       </div>
+      <div class="field">
+        <label>Judge Groups (Comma Separated)</label>
+        <div
+                class="ui label"
+                ng-repeat="group in judgeGroups.replace(' ','').split(',')">
+          {{group}}
+        </div>
+        <textarea
+                class="ui input"
+                type="text"
+                ng-model="judgeGroups">
+            </textarea>
+      </div>
 
       <div class="ui field">
         <div

@@ -85,6 +85,11 @@ var schema = new mongoose.Schema({
     select: false,
     default: ['Technicality', 'Relevance', 'Presentation']
   },
+  judgeGroups: {
+    type: [String],
+    select: false,
+    default: ['Malibu', 'Zuma', 'Hermosa', 'Manhattan', 'Paradise Cove', 'Santa Monica', 'Dockweiler', 'Venice', 'Redondo']
+  },
   transportation: [{ // TODO: implement this
     school: String,
     coordinators: [{
@@ -119,7 +124,7 @@ schema.statics.getReview = function(callback){
 schema.statics.getJudging = function(callback){
   this
       .findOne({})
-      .select('generalJudges sponsorJudges generalJudgingCategories sponsorJudgingCategories judgingCriteria')
+      .select('generalJudges sponsorJudges generalJudgingCategories sponsorJudgingCategories judgingCriteria judgeGroups')
       .exec(function(err, settings){
         return callback(err, settings);
       });

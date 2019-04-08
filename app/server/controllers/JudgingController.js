@@ -83,12 +83,35 @@ JudgingController.getQueue = function (user, callback) {
 
 };
 
-
+/**
+ *
+ * @param projectId
+ * @param judgeUser
+ * @param scores
+ * @param comments
+ * @param callback
+ */
 JudgingController.updateJudging = function (projectId, judgeUser, scores, comments, callback) {
 
 };
 
+/**
+ * Sets the role of the judge
+ * @param userId
+ * @param callback
+ */
+JudgingController.setRole = function (userId, callback) {
 
+};
+
+/**
+ * Set the group of the judge
+ * @param userId
+ * @param callback
+ */
+JudgingController.setGroup = function (userId, callback) {
+
+};
 
 /**
  * Assigns user for review. Will not reassign, or assign more than allowed

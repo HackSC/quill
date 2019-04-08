@@ -79,17 +79,25 @@ angular.module('reg')
               $scope.generalJudgingCategories = response.data.generalJudgingCategories.join(", ");
               $scope.sponsorJudgingCategories = response.data.sponsorJudgingCategories.join(", ");
               $scope.judgingCriteria = response.data.judgingCriteria.join(", ");
+              $scope.judgeGroups = response.data.judgeGroups.join(", ");
             });
 
         $scope.updateJudging = function () {
           SettingsService
-              .updateJudging($scope.generalJudges, $scope.sponsorJudges, $scope.generalJudgingCategories.split(',').map(s => s.trim()), $scope.sponsorJudgingCategories.split(',').map(s => s.trim()), $scope.judgingCriteria.split(',').map(s => s.trim()))
+              .updateJudging(
+                  $scope.generalJudges,
+                  $scope.sponsorJudges,
+                  $scope.generalJudgingCategories.split(',').map(s => s.trim()),
+                  $scope.sponsorJudgingCategories.split(',').map(s => s.trim()),
+                  $scope.judgingCriteria.split(',').map(s => s.trim()),
+                  scope.judgeGroups.split(',').map(s => s.trim()))
               .then(response => {
                 $scope.generalJudges = response.data.generalJudges;
                 $scope.sponsorJudges = response.data.sponsorJudges;
                 $scope.generalJudgingCategories = response.data.generalJudgingCategories.join(", ");
                 $scope.sponsorJudgingCategories = response.data.sponsorJudgingCategories.join(", ");
                 $scope.judgingCriteria = response.data.judgingCriteria.join(", ");
+                $scope.judgeGroups = response.data.judgeGroups.join(", ");
                 swal('Looks Good!', 'Judge Settings Updated', 'success');
               })
         };

@@ -266,6 +266,8 @@ var judging = {
         }
     },
 
+    group: String,
+
     categories: [String],
 
     queue: [String],

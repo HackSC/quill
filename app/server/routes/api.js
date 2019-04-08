@@ -540,7 +540,8 @@ module.exports = function(router) {
     var generalJudgingCategories = req.body.generalJudgingCategories;
     var sponsorJudgingCategories = req.body.sponsorJudgingCategories;
     var judgingCriteria = req.body.judgingCriteria;
-    SettingsController.updateJudging(generalJudges, sponsorJudges, generalJudgingCategories, sponsorJudgingCategories, judgingCriteria, defaultResponse(req, res));
+    var judgeGroups = req.body.judgeGroups;
+    SettingsController.updateJudging(generalJudges, sponsorJudges, generalJudgingCategories, sponsorJudgingCategories, judgingCriteria, judgeGroups, defaultResponse(req, res));
   });
 
   /**
