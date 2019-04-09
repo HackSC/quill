@@ -3,6 +3,7 @@ var SettingsController = require('../controllers/SettingsController');
 var FileController = require('../controllers/FileController');
 var MailController = require('../controllers/MailController');
 var ReviewController = require('../controllers/ReviewController');
+var JudgingController = require('../controllers/JudgingController');
 
 var request = require('request');
 
@@ -63,6 +64,32 @@ module.exports = function(router) {
       return res.status(400).send({
         message: 'Token does not match user id.'
       });
+    });
+  }
+
+  /**
+   * Using the access token provided, check to make sure that
+   * you are, indeed, a judge or admin.
+   */
+  function isJudgeOrAdmin(req, res, next){
+
+    var token = getToken(req);
+
+    UserController.getByToken(token, function(err, user){
+
+      if (err) {
+        return res.status(500).send(err);
+      }
+
+      if (user && (user.admin || user.judge)){
+        req.user = user;
+        return next();
+      }
+
+      return res.status(401).send({
+        message: 'Get outta here, punk!'
+      });
+
     });
   }
 
@@ -339,6 +366,24 @@ module.exports = function(router) {
     var id = req.params.id;
     var user = req.user;
     UserController.removeAdminById(id, user, defaultResponse(req, res));
+  });
+
+  /**
+   * Make user a judge
+   */
+  router.post('/users/:id/makejudge', isAdmin, function(req, res){
+    var id = req.params.id;
+    var user = req.user;
+    UserController.makeJudgeById(id, user, defaultResponse(req, res));
+  });
+
+  /**
+   * Make user not a judge
+   */
+  router.post('/users/:id/removejudge', isAdmin, function(req, res){
+    var id = req.params.id;
+    var user = req.user;
+    UserController.removeJudgeById(id, user, defaultResponse(req, res));
   });
 
   /**
@@ -633,6 +678,7 @@ module.exports = function(router) {
   router.get('/review/assign', isAdmin, function(req, res){
     ReviewController.assignReviews(defaultResponse(req, res));
   });
+
   /**
    * [ADMIN ONLY]
    * Returns the queue of users the admin has to review
@@ -654,6 +700,114 @@ module.exports = function(router) {
     var ratings = req.body.ratings;
     var comments = req.body.comments;
     ReviewController.updateReview(userId, adminUser, ratings, comments, defaultResponse(req, res));
+  });
+
+  // ---------------------------------------------
+  // Judging [ADMIN OR JUDGE ONLY!]
+  // ---------------------------------------------
+
+  /**
+   * [ADMIN ONLY]
+   * Returns projects list sorted by their score
+   */
+  router.get('/judging/list/projects',  isAdmin, function(req, res){
+    JudgingController.getProjectsList(defaultResponse(req, res));
+  });
+
+  /**
+   * [ADMIN ONLY]
+   * Returns judges list sorted by their total judge count
+   */
+  router.get('/judging/list/judges', isAdmin, function(req, res){
+    JudgingController.getJudgesList(defaultResponse(req, res));
+  });
+
+  /**
+   * [ADMIN ONLY]
+   * upload project submission data
+   */
+  router.put('/judging/upload', isAdmin, function(req, res){
+    var data = req.body.data;
+    JudgingController.uploadSubmissionsData(data, defaultResponse(req, res));
+  });
+
+  /**
+   * [ADMIN ONLY]
+   * Returns table assignments
+   */
+  router.get('/judging/export/tableAssignments', isAdmin, function(req, res){
+    JudgingController.exportTableAssignments(defaultResponse(req, res));
+  });
+
+  /**
+   * [ADMIN ONLY]
+   * Returns judging data
+   */
+  router.get('/judging/exports/judgingData', isAdmin, function(req, res){
+    JudgingController.exportJudgingData(defaultResponse(req, res));
+  });
+
+  /**
+   * [ADMIN ONLY]
+   * Assign judges to projects
+   */
+  router.get('/judging/assign', isAdmin, function(req, res){
+    JudgingController.assignJudging(defaultResponse(req, res));
+  });
+
+  /**
+   * Returns the queue of projects assigned to the judge
+   */
+  router.get('/judging/queue', isJudgeOrAdmin, function(req, res){
+    var user = req.user; // grab judge
+    JudgingController.getQueue(user._id, defaultResponse(req, res));
+  });
+
+  /**
+   * Updates the score of a project
+   */
+  router.put('/judging/update', isJudgeOrAdmin, function(req, res){
+    var user = req.user; // grab judge
+    var projectId = req.body.projectId;
+    var scores = req.body.scores;
+    var comments = req.body.comments;
+    JudgingController.updateJudging(projectId, user._id, scores, comments, defaultResponse(req, res))
+  });
+
+  /**
+   * Set role of a judge
+   */
+  router.put('/judging/set/role', isJudgeOrAdmin, function (req, res){
+    var user = req.user;
+    var role = req.body.role;
+    JudgingController.setRole(user._id, role, defaultResponse(req, res));
+  });
+
+  /**
+   * Set role of a judge
+   */
+  router.put('/judging/set/group', isJudgeOrAdmin, function (req, res){
+    var user = req.user;
+    var group = req.body.group;
+    JudgingController.setGroup(user._id, group, defaultResponse(req, res));
+  });
+
+  /**
+   * Give an award to a project
+   */
+  router.put('/judging/award/add', isJudgeOrAdmin, function (req, res){
+    var projectId = req.body.projectId;
+    var award = req.body.award;
+    JudgingController.addAward(projectId, award, defaultResponse(req, res));
+  });
+
+  /**
+   * Removes an award from a project
+   */
+  router.put('/judging/award/remove', isJudgeOrAdmin, function (req, res){
+    var projectId = req.body.projectId;
+    var award = req.body.award;
+    JudgingController.removeAward(projectId, award, defaultResponse(req, res));
   });
 
 };

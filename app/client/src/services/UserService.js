@@ -115,6 +115,14 @@ angular.module('reg')
       removeAdmin: function(id){
         return $http.post(base + id + '/removeadmin');
       },
+
+      makeJudge: function(id){
+        return $http.post(base + id + '/makejudge');
+      },
+
+      removeJudge: function(id){
+        return $http.post(base + id + '/removejudge');
+      },
     };
   }
   ]);

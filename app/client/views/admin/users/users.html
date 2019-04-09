@@ -274,11 +274,11 @@
               <button
                 ng-click="toggleCheckIn($event, user, $index)"
                 title="Check In/Out"
-                class="ui circular mini basic green icon button">
+                class="ui circular mini basic icon button">
 
                 <i
                   ng-if="!user.status.checkedIn"
-                  class="flag outline icon"></i>
+                  class="grey flag icon"></i>
 
                 <i
                   ng-if="user.status.checkedIn"
@@ -289,15 +289,30 @@
               <button
                 ng-click="toggleAdmin($event, user, $index)"
                 title="Toggle Admin"
-                class="ui circular mini basic green icon button">
+                class="ui circular mini basic icon button">
 
                 <i
                   ng-if="!user.admin"
-                  class="spy outline icon"></i>
+                  class="grey spy icon"></i>
 
                 <i
                   ng-if="user.admin"
                   class="green spy icon"></i>
+
+              </button>
+
+              <button
+                      ng-click="toggleJudge($event, user, $index)"
+                      title="Toggle Judge"
+                      class="ui circular mini basic icon button">
+
+                <i
+                        ng-if="!user.judge"
+                        class="grey gavel icon"></i>
+
+                <i
+                        ng-if="user.judge"
+                        class="green gavel icon"></i>
 
               </button>
 

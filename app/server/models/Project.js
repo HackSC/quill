@@ -1,5 +1,4 @@
-import * as validator from "validator";
-
+var validator = require('validator');
 var mongoose = require('mongoose');
 
 /**

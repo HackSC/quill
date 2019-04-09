@@ -81,10 +81,10 @@ JudgingController.getJudgesList = function (callback) {
 /**
  * Clears the Project Table and stores the new file
  * Assigns table number while saving data
- * @param file
+ * @param data
  * @param callback
  */
-JudgingController.parseSubmissionData = function (file, callback) {
+JudgingController.uploadSubmissionsData = function (data, callback) {
   // TODO
 };
 
@@ -362,7 +362,7 @@ JudgingController.getQueue = function (id, callback) {
 };
 
 /**
- *
+ * Updates the score of a project
  * @param projectId
  * @param judgeId
  * @param scores

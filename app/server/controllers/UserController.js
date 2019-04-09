@@ -1018,9 +1018,9 @@ UserController.makeAdminById = function (id, user, callback) {
 /**
  * [ADMIN ONLY]
  *
- * Make user an admin
- * @param  {String}   userId   User id of the user being made admin
- * @param  {String}   user     User making this person admin
+ * Remove user as admin
+ * @param  {String}   userId   User id of the user removed as admin
+ * @param  {String}   user     User removing this person as admin
  * @param  {Function} callback args(err, user)
  */
 UserController.removeAdminById = function (id, user, callback) {
@@ -1030,6 +1030,50 @@ UserController.removeAdminById = function (id, user, callback) {
       }, {
         $set: {
           'admin': false
+        }
+      }, {
+        new: true
+      },
+      callback);
+};
+
+/**
+ * [ADMIN ONLY]
+ *
+ * Make user a judge
+ * @param  {String}   userId   User id of the user being made judge
+ * @param  {String}   user     User making this person judge
+ * @param  {Function} callback args(err, user)
+ */
+UserController.makeJudgeById = function (id, user, callback) {
+  User.findOneAndUpdate({
+        _id: id,
+        verified: true
+      }, {
+        $set: {
+          'judge': true
+        }
+      }, {
+        new: true
+      },
+      callback);
+};
+
+/**
+ * [ADMIN ONLY]
+ *
+ * Remove user as judge
+ * @param  {String}   userId   User id of the user removed as judge
+ * @param  {String}   user     User removing this person as judge
+ * @param  {Function} callback args(err, user)
+ */
+UserController.removeJudgeById = function (id, user, callback) {
+  User.findOneAndUpdate({
+        _id: id,
+        verified: true
+      }, {
+        $set: {
+          'judge': false
         }
       }, {
         new: true
