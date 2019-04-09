@@ -206,6 +206,23 @@ class="ui purple segment">
               <!--<label>Allow minors</label>-->
           <!--</div>-->
           <div class="field">
+            <label> Auto Decide </label>
+            <select
+                    ng-model="settings.autoDecide">
+              <option value="">None</option>
+              <option value="Admit">Admit</option>
+              <option value="Waitlist">Waitlist</option>
+              <option value="Reject">Reject</option>
+            </select>
+          </div>
+          <div class="ui field">
+            <div
+                    class="ui green button"
+                    ng-click="updateAutoDecide()">
+              Update
+            </div>
+          </div>
+          <div class="field">
               <label>Number of Admissions</label>
               <div class="ui input">
                   <input

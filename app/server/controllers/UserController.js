@@ -10,7 +10,7 @@ var moment = require('moment');
 var UserController = {};
 
 var maxTeamSize = process.env.TEAM_MAX_SIZE || 4;
-
+var adminEmail = process.env.ADMIN_EMAIL;
 
 // Tests a string if it ends with target s
 function endsWith(s, test) {
@@ -431,7 +431,29 @@ UserController.submitById = function (id, profile, callback) {
         },
         {
           new: true
-        }, callback);
+        }, function(err, user){
+          if(err){
+            return callback(err);
+          }
+          // check for auto decide
+          Settings.getPublicSettings(function(err, settings){
+            if(err){
+              return callback(err);
+            }
+
+            var adminUser = {email: adminEmail};
+
+            if(settings.autoDecide === 'Accept'){
+              UserController.admitUser(user._id, adminUser, callback);
+            }else if(settings.autoDecide === 'Waitlist'){
+              UserController.waitlistUser(user._id, adminUser, callback);
+            }else if(settings.autoDecide === 'Reject'){
+              UserController.rejectUser(user._id, adminUser, callback);
+            }else{
+              callback(err, user);
+            }
+          });
+        });
 
   });
 };

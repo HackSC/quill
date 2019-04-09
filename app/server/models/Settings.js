@@ -26,6 +26,18 @@ var schema = new mongoose.Schema({
     type: Number,
     default: Date.now() + (2*31104000000) // Date of confirmation
   },
+  autoDecide: {
+    type: String,
+    enum: {
+      values: [
+          '',
+          'Admit',
+          'Waitlist',
+          'Reject'
+      ]
+    },
+    default: ''
+  },
   whitelistedEmails: {
     type: [String],
     select: false,
