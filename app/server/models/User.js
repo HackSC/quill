@@ -261,13 +261,18 @@ var judging = {
             values: [
                 'General',
                 'Sponsor',
-                'Both',
             ],
-        }
+        },
+        default: '',
     },
 
-    group: String,
+    // For general judges
+    group: {
+        type: String,
+        default: '',
+    },
 
+    // For sponsor judges
     categories: [String],
 
     queue: [String],

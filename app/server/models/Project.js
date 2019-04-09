@@ -57,6 +57,8 @@ var schema = new mongoose.Schema({
 
   desiredPrizes : [String],
 
+  vertical: String,
+
   builtWith : [String],
 
   submitter : profile,
