@@ -10,7 +10,7 @@ angular.module('reg')
 
       // Is registration open?
       var Settings = settings.data;
-      $scope.regIsOpen = Utils.isRegOpen(Settings);
+      $scope.regIsOpen = Utils.isAnyRegOpen(Settings);
 
       // Start state for login
       $scope.loginState = 'login';
@@ -45,7 +45,7 @@ angular.module('reg')
 
       $scope.sendResetEmail = function() {
         var email = $scope.email;
-        
+
         if (email === undefined || email === ''){
           $scope.error = "Please enter in a valid e-mail!";
           return;

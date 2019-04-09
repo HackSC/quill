@@ -5,8 +5,12 @@ angular.module('reg')
   .factory('Utils', [
     function(){
       return {
-        isRegOpen: function(settings){
-          return Date.now() > settings.timeOpen && Date.now() < settings.timeClose;
+        isRegOpen: function(settings, email){
+          var usc = email.split('@')[1] === 'usc.edu';
+          return Date.now() > settings.timeOpen && Date.now() < (!usc ? settings.timeClose : settings.timeCloseUSC);
+        },
+        isAnyRegOpen: function(settings){
+          return Date.now() > settings.timeOpen && Date.now() < Math.max(settings.timeClose, settings.timeCloseUSC);
         },
         isAfter: function(time){
           return Date.now() > time;

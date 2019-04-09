@@ -43,7 +43,7 @@ function canRegister(email, password, callback) {
       });
     }
 
-    if (now > times.timeClose) {
+    if (now > Math.max(times.timeClose, times.timeCloseUSC)) {
       return callback({
         message: "Sorry, registration is closed."
       });
