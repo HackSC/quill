@@ -201,6 +201,11 @@ ReviewController.assignReviews = function (callback) {
                 verified: true,
                 admin: false,
                 'status.submitted': true,
+                'status.admitted': false,
+                'status.waitlisted': false,
+                'status.rejected': false,
+                'status.confirmed': false,
+                'status.declined': false,
             }, function (err, users) {
                 if (err) {
                     return callback(err)
