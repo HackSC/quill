@@ -207,7 +207,7 @@ ReviewController.assignReviews = function (callback) {
                 'status.confirmed': false,
                 'status.declined': false,
             }, function (err, users) {
-                if (err) {
+                if (err || users.length === 0) {
                     return callback(err)
                 }
 

@@ -195,8 +195,10 @@ angular.module('reg')
                 UserService
                     .submitApp(Session.getUserId(), $scope.user.profile)
                     .then(response => {
-                        // add person into review queue
-                        ReviewService.assignReview(response.data.id);
+                        // add person into review queue if not decided
+                        if(settings.autoDecide === ''){
+                            ReviewService.assignReview(response.data.id);
+                        }
                         swal("Awesome!", "Your application has been received.", "success").then(value => {
                             $state.go("app.dashboard");
                         });

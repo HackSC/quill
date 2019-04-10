@@ -354,7 +354,7 @@ UserController.updateProfileById = function (id, profile, callback) {
       });
     }
 
-    if (now > times.timeClose) {
+    if (now > Math.max(times.timeClose, times.timeCloseUSC)) {
       return callback({
         message: "Sorry, registration is closed."
       });
@@ -410,7 +410,7 @@ UserController.submitById = function (id, profile, callback) {
         });
       }
 
-      if (now > times.timeClose) {
+      if (now > Math.max(times.timeClose, times.timeCloseUSC)) {
         return callback({
           message: "Sorry, registration is closed."
         });
