@@ -2,23 +2,29 @@
   <div class="divided title">
     Judging
   </div>
-  <div class="ui segment"
-       ng-class="{'loading': loading}">
 
+  <div class="ui segment"
+       ng-show="user.admin"
+       ng-class="{'loading': loading}">
     <!--List Modal-->
     <div class="ui modal">
       <div class="header">Judging List</div>
       <div class="content">
         <div class="ui list">
           <div class="item">
-            <strong>Need to Judge</strong>
+            <strong>Judges</strong>
           </div>
-          <div class="item" ng-repeat="reviewers in reviewersList">
-            {{reviewers.profile.name ? reviewers.profile.name : reviewers.email}} : {{reviewers.review.reviewQueue.length}}
+          <div class="item" ng-repeat="judges in judgesList">
+            {{judge.profile.name ? judge.profile.name : judge.email}} : {{judge.judging.queue.length}}
           </div>
         </div>
       </div>
     </div>
+
+
+  </div>
+  <div class="ui segment"
+       ng-class="{'loading': loading}">
 
     <div>
       <div class="six column centered row">
@@ -51,7 +57,8 @@
 
     <div ng-show="users.length == 0">
       <p>
-        You don't have anyone to review right now. Press the refresh button or check back another time, or press Assigned Reviews to perform a comprehensive scan.
+        You don't have anyone to review right now. Press the refresh button or check back another time, or press
+        Assigned Reviews to perform a comprehensive scan.
         If it is past the deadline, then you are finished! Congrats!
       </p>
     </div>
@@ -79,7 +86,9 @@
           </div>
           <span class="centered subtext">*Score from 0 - 5</span>
           <div class="ui two column centered row">
-            <button class="ui green inverted button column" ng-class="{'disabled': updating}" ng-click="updateReview()">Submit</button>
+            <button class="ui green inverted button column" ng-class="{'disabled': updating}" ng-click="updateReview()">
+              Submit
+            </button>
             <!--Notification-->
             <i class="ui column green check icon" ng-show="toast"></i>
           </div>
@@ -95,7 +104,7 @@
 
       <div class="content">
         <div ng-repeat="section in user.sections">
-          <div class="divided title"> {{section.name}} </div>
+          <div class="divided title"> {{section.name}}</div>
 
           <p ng-repeat="field in section.fields" ng-show="!(blindReview && field.sensitive)">
             <strong> {{field.name}} </strong>
