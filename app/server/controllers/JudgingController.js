@@ -2,7 +2,25 @@ var User = require('../models/User');
 var Project = require('../models/Project');
 var Settings = require('../models/Settings');
 
+var moment = require('moment');
+var parse = require('csv-parse');
+var stringify = require('csv-stringify');
+
 var JudgingController = {};
+
+/**
+ * Formats the time in h:mm a
+ * @param time
+ * @returns {string}
+ */
+var formatTime = function (time) {
+  if (!time || time <= 0) {
+    return 'N/A'
+  }
+  let date = new Date(time);
+  // Hack for timezone
+  return moment(date).format('h:mm a');
+};
 
 /**
  * Returns a promise that fulfills judging settings
@@ -45,7 +63,7 @@ var getJudges = function () {
  */
 var getProjects = function () {
   return new Promise(function (resolve, reject) {
-    Projects.find({}, function (err, projects) {
+    Project.find({}, function (err, projects) {
       if (err) {
         reject(err);
       } else {
@@ -53,6 +71,30 @@ var getProjects = function () {
       }
     })
   });
+};
+
+/**
+ * Returns one project
+ * @param id
+ * @param callback
+ */
+JudgingController.getProject = function (id, callback) {
+  Project.findOne({
+    _id: id,
+  }, callback);
+};
+
+/**
+ * Returns list of projects
+ * @param projects
+ * @param callback
+ */
+JudgingController.getProjects = function (projects, callback) {
+  console.log(projects);
+  var idArray = projects.map(e => ({_id: e}));
+  Project.find({
+    $or: idArray
+  }, callback);
 };
 
 /**
@@ -85,7 +127,124 @@ JudgingController.getJudgesList = function (callback) {
  * @param callback
  */
 JudgingController.uploadSubmissionsData = function (data, callback) {
-  // TODO
+  // Clear all judging and projects
+  var delProjects = new Promise(function (resolve, reject) {
+    Project.deleteMany({}, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+  var delJudging = new Promise(function (resolve, reject) {
+    User.updateMany({
+      verified: true,
+      judge: true,
+    }, {
+      $set: {
+        'judging': {
+          role: '',
+          group: '',
+          categories: [],
+          queue: [],
+          count: 0
+        }
+      }
+    }, function (err) {
+      if (err) {
+        reject(err)
+      } else {
+        resolve();
+      }
+    });
+  });
+
+  Promise.all([delProjects, delJudging]).then(function () {
+    parseCSV(data, function (output) {
+      // remove first item
+      output.shift();
+      // Add into projects
+      for (let i = 1; i <= output.length; i++) {
+        output.forEach(val => {
+          let p = new Project();
+          p.submissionTitle = val[0];
+          p.submissionUrl = val[1];
+          p.plainDescription = val[2];
+          p.video = val[3];
+          p.website = val[4];
+          p.fileUrl = val[5];
+          p.vertical = val[6];
+          p.desiredPrizes = val[7].split(',').map(v => v.trim());
+          p.builtWith = val[8].split(',').map(v => v.trim());
+          p.submitter = {
+            screenName: val[9],
+            firstName: val[10],
+            lastName: val[11],
+            email: val[12],
+          };
+          p.schools = val[13].split(',').map(v => v.trim());
+          p.teammates = [];
+          p.judging = {
+            judges: [],
+            overallScore: 0,
+          };
+          p.awards = [];
+          p.table = i;
+          p.time = 0;
+
+          // add teammates
+          let numTeammates = val[14];
+          for (let j = 0; j < numTeammates; j++) {
+            let index = 4 * j;
+            p.teammates.push({
+              screenName: val[14 + index + 1],
+              firstName: val[14 + index + 2],
+              lastName: val[14 + index + 3],
+              email: val[14 + index + 4],
+            });
+          }
+
+          p.save(function (err) {
+            if (err) {
+              console.log(err);
+            }
+          });
+        });
+      }
+      callback();
+    });
+  });
+
+
+  // Parse all the data and add as project
+  var parseCSV = function (data, callback) {
+    var output = [];
+    // Create the parser
+    var parser = parse({
+      delimiter: ","
+    });
+    // Use the readable stream api
+    parser.on('readable', function () {
+      let record;
+      while (record = parser.read()) {
+        output.push(record)
+      }
+    });
+    // Catch any error
+    parser.on('error', function (err) {
+      console.error(err.message)
+    });
+    // When we are done, test that the parsed output matched what expected
+    parser.on('end', function () {
+      // can use output
+      callback(output);
+    });
+    // Write to the parser
+    parser.write(data.trim());
+    // Close the readable stream
+    parser.end()
+  }
 };
 
 /**
@@ -93,14 +252,76 @@ JudgingController.uploadSubmissionsData = function (data, callback) {
  * @param callback
  */
 JudgingController.exportTableAssignments = function (callback) {
-  // TODO
+  Project.find({}, function (err, projects) {
+    exportCSV(projects, function (err, data) {
+      if (err) {
+        return callback(err);
+      }
+      callback(null, data.join(''));
+    });
+  });
+
+  var exportCSV = function (projects, callback) {
+    let data = [];
+    let stringifier = stringify({
+      delimiter: ','
+    });
+    stringifier.on('readable', function () {
+      let row;
+      while (row = stringifier.read()) {
+        data.push(row)
+      }
+    });
+    stringifier.on('error', function (err) {
+      callback(err);
+    });
+    stringifier.on('finish', function () {
+      callback(null, data);
+    });
+    stringifier.write(['Project Name', 'Submission Email', 'Table Number', 'Call Time', 'Location']);
+    projects.forEach(function (project) {
+      stringifier.write([project.submissionTitle, project.submitter.email, project.table, formatTime(project.time), project.vertical])
+    });
+    stringifier.end()
+  };
 };
 
 /**
  * Creates a csv of all the Judging Data
  */
 JudgingController.exportJudgingData = function (callback) {
-  // TODO
+  Project.find({}, function (err, projects) {
+    exportCSV(projects, function (err, data) {
+      if (err) {
+        return callback(err);
+      }
+      callback(null, data.join(''));
+    });
+  });
+
+  var exportCSV = function (projects, callback) {
+    let data = [];
+    let stringifier = stringify({
+      delimiter: ','
+    });
+    stringifier.on('readable', function () {
+      let row;
+      while (row = stringifier.read()) {
+        data.push(row)
+      }
+    });
+    stringifier.on('error', function (err) {
+      callback(err);
+    });
+    stringifier.on('finish', function () {
+      callback(null, data);
+    });
+    stringifier.write(['Project Name', 'Judges', 'Overall Score']);
+    projects.forEach(function (project) {
+      stringifier.write([project.submissionTitle, project.judging.judges.map(v => v.email).join(','), project.judging.overallScore])
+    });
+    stringifier.end()
+  };
 };
 
 /**
@@ -108,6 +329,9 @@ JudgingController.exportJudgingData = function (callback) {
  * @param callback
  */
 JudgingController.assignJudging = function (callback) {
+  // Interval in ms
+  var presentationTime = 5 * (60 * 1000);
+
   var assign = function (settings, judges, projects, callback) {
     // Get judge groups by user picked groups and individual groups
     var judgeGroups = new Map(settings.judgeGroups.map(e => [e.name, []]));
@@ -125,6 +349,7 @@ JudgingController.assignJudging = function (callback) {
     });
 
     // Get judge groups by category
+    // Category Groups looks like category => {name, judges[]}
     var categoryGroups = new Map(settings.generalJudgingCategories.map(e => [e, []]));
     settings.judgeGroups.forEach(function (group) {
       if (categoryGroups.has(group.category)) {
@@ -134,6 +359,7 @@ JudgingController.assignJudging = function (callback) {
         });
       }
     });
+
 
     // Assign Group Judging
     categoryGroups.forEach(function (judgeGroups, category) {
@@ -145,7 +371,8 @@ JudgingController.assignJudging = function (callback) {
           return callback(err);
         }
 
-        var groupIndex = 0;
+        let groupIndex = 0;
+        let callTime = settings.timeJudge;
         for (let i = 0; i < projects.length; i++) {
           // combine them in to appropriate judges format
           let judges = judgeGroups[groupIndex].judges;
@@ -158,6 +385,9 @@ JudgingController.assignJudging = function (callback) {
               'judging.judges': {
                 $each: judges.map(e => ({email: e.email, scores: [], comments: ''}))
               }
+            },
+            $set: {
+              'time': callTime,
             }
           }, {
             new: true
@@ -173,7 +403,10 @@ JudgingController.assignJudging = function (callback) {
               _id: judge._id
             }, {
               $push: {
-                'judging.queue': projects[i]._id,
+                'judging.queue': {
+                  id: projects[i]._id,
+                  judged: false
+                },
               },
               $inc: {
                 'judging.count': 1,
@@ -191,6 +424,8 @@ JudgingController.assignJudging = function (callback) {
           groupIndex++;
           if (groupIndex >= judgeGroups.length) {
             groupIndex = 0;
+            // increase the calltime
+            callTime += presentationTime;
           }
         }
       });
@@ -231,7 +466,10 @@ JudgingController.assignJudging = function (callback) {
               _id: judge._id
             }, {
               $push: {
-                'judging.queue': project._id,
+                'judging.queue': {
+                  id: project._id,
+                  judged: false
+                },
               },
               $inc: {
                 'judging.count': 1,
@@ -251,8 +489,17 @@ JudgingController.assignJudging = function (callback) {
   };
 
   getSettings().then(function (settings) {
+    if (!settings) {
+      return callback();
+    }
     getJudges().then(function (judges) {
+      if (!judges) {
+        return callback();
+      }
       getProjects().then(function (projects) {
+        if (!projects) {
+          return callback();
+        }
         assign(settings, judges, projects, callback);
       }, function (err) {
         return callback(err)
@@ -263,95 +510,16 @@ JudgingController.assignJudging = function (callback) {
   }, function (err) {
     return callback(err);
   });
-
-  Settings.getReview(function (err, settings) {
-    if (err) {
-      return callback(err);
-    }
-
-    // get the ascending list of admins
-    rankCount(false, function (err, admins) {
-      if (err) {
-        return callback(err);
-      }
-
-      // find all users that need to be assigned
-      User.find({
-        verified: true,
-        admin: false,
-        'status.submitted': true,
-      }, function (err, users) {
-        if (err) {
-          return callback(err)
-        }
-
-        // assign all users to admins for review
-        var adminIndex = 0;
-        for (let i = 0; i < users.length; i++) {
-          // assign only up to settings.reviewers
-          var reviewers = settings.reviewers - users[i].review.reviewers.length;
-          for (let j = 0; j < reviewers; j++) {
-            // adminIndex loop and distribution
-            if (adminIndex >= admins.length) {
-              adminIndex = 0;
-            } else if (adminIndex < admins.length - 1 && admins[adminIndex].review.reviewCount < admins[adminIndex + 1].review.reviewCount) {
-              // assign to admins with lower reviewCounts
-              // when this happens, you've reached the next level of review counts, so go back to the start and iterate again
-              adminIndex = 0;
-            }
-            // assign user to reviewer
-            User.findOneAndUpdate({
-              _id: admins[adminIndex].id,
-              verified: true
-            }, {
-              $push: {
-                'review.reviewQueue': users[i].id,
-              },
-              $inc: {
-                'review.reviewCount': 1,
-              }
-            }, {
-              new: true
-            }, function (err) {
-              if (err) {
-                return callback(err);
-              }
-            });
-
-            // assign reviewer to user
-            User.findOneAndUpdate({
-              _id: users[i].id,
-              verified: true
-            }, {
-              $push: {
-                'review.reviewers': {
-                  email: admins[adminIndex].email,
-                  ratings: [],
-                  comments: ''
-                }
-              }
-            }, {
-              new: true
-            }, function (err) {
-              if (err) {
-                return callback(err);
-              }
-            });
-            adminIndex++;
-          }
-        }
-      });
-    });
-  });
 };
 
 /**
- * Gets the projects to judge queue
+ * Gets the projects or judge queue
+ * Returns a list of {name, id}
  * @param id
  * @param callback
  */
 JudgingController.getQueue = function (id, callback) {
-  User.find({
+  User.findOne({
     _id: id,
   }, function (err, user) {
     if (err) {
@@ -374,11 +542,18 @@ JudgingController.updateJudging = function (projectId, judgeId, scores, comments
     return sum + val
   });
 
-  // Get the Judge Profile
-  User.findOne({
+  // Get the Judge Profile and update judged or not
+  User.findOneAndUpdate({
     verified: true,
     judge: true,
-    _id: judgeId
+    _id: judgeId,
+    'judging.queue.id': projectId
+  }, {
+    $set: {
+      'judging.queue.$.judged': true,
+    }
+  }, {
+    new: true,
   }, function (err, judgeUser) {
     if (err) {
       return callback(err);
@@ -394,7 +569,7 @@ JudgingController.updateJudging = function (projectId, judgeId, scores, comments
         'judging.judges.$.comments': comments
       },
       $inc: {
-        'judging.overallRating': scoreSum
+        'judging.overallScore': scoreSum
       }
     }, {
       new: true
@@ -429,17 +604,41 @@ JudgingController.setRole = function (id, role, callback) {
 /**
  * Set the group of the judge
  * @param id
+ * @param group
  * @param callback
  */
-JudgingController.setGroup = function (id, callback) {
+JudgingController.setGroup = function (id, group, callback) {
   User.findOneAndUpdate({
         verified: true,
         judge: true,
-        _id: userId,
+        _id: id,
       },
       {
         $set: {
-          'judging.group': role,
+          'judging.group': group,
+        }
+      },
+      {
+        new: true,
+      },
+      callback);
+};
+
+/**
+ * Set the categories of the judge
+ * @param id
+ * @param categories
+ * @param callback
+ */
+JudgingController.setCategories = function (id, categories, callback) {
+  User.findOneAndUpdate({
+        verified: true,
+        judge: true,
+        _id: id,
+      },
+      {
+        $set: {
+          'judging.categories': categories,
         }
       },
       {
@@ -452,30 +651,36 @@ JudgingController.setGroup = function (id, callback) {
  * Adds an award from a project
  * @param projectId
  * @param award
+ * @param callback
  */
-JudgingController.addAward = function (projectId, award) {
+JudgingController.addAward = function (projectId, award, callback) {
   Project.findOneAndUpdate({
     _id: projectId
   }, {
     $push: {
       awards: award
     }
-  });
+  }, {
+    new: true
+  }, callback);
 };
 
 /**
  * Removes an award from a project
  * @param projectId
  * @param award
+ * @param callback
  */
-JudgingController.removeAward = function (projectId, award) {
+JudgingController.removeAward = function (projectId, award, callback) {
   Project.findOneAndUpdate({
     _id: projectId
   }, {
     $pull: {
       awards: award
     }
-  });
+  }, {
+    new: true
+  }, callback);
 };
 
 module.exports = JudgingController;

@@ -559,6 +559,17 @@ module.exports = function(router) {
   });
 
   /**
+   * Update the Judge date.
+   * body: {
+   *   time: Number
+   * }
+   */
+  router.put('/settings/confirm-by', isAdmin, function(req, res){
+    var time = req.body.time;
+    SettingsController.updateField('timeJudge', time, defaultResponse(req, res));
+  });
+
+  /**
    * [ADMIN ONLY]
    * Get the judging judges and criteria.
    *
@@ -707,6 +718,21 @@ module.exports = function(router) {
   // ---------------------------------------------
 
   /**
+   * get a specific project
+   */
+  router.put('/judging/projects', isJudgeOrAdmin, function(req, res){
+    var projects = req.body.projects;
+    JudgingController.getProjects(projects, defaultResponse(req, res));
+  });
+
+  /**
+   * get a specific project
+   */
+  router.get('/judging/project/:id', isJudgeOrAdmin, function(req, res){
+    JudgingController.getProject(req.params.id, defaultResponse(req, res));
+  });
+
+  /**
    * [ADMIN ONLY]
    * Returns projects list sorted by their score
    */
@@ -743,7 +769,7 @@ module.exports = function(router) {
    * [ADMIN ONLY]
    * Returns judging data
    */
-  router.get('/judging/exports/judgingData', isAdmin, function(req, res){
+  router.get('/judging/export/judgingData', isAdmin, function(req, res){
     JudgingController.exportJudgingData(defaultResponse(req, res));
   });
 
@@ -790,6 +816,15 @@ module.exports = function(router) {
     var user = req.user;
     var group = req.body.group;
     JudgingController.setGroup(user._id, group, defaultResponse(req, res));
+  });
+
+  /**
+   * Set categories of a judge
+   */
+  router.put('/judging/set/categories', isJudgeOrAdmin, function (req, res){
+    var user = req.user;
+    var categories = req.body.categories;
+    JudgingController.setCategories(user._id, categories, defaultResponse(req, res));
   });
 
   /**

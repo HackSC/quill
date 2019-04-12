@@ -1046,17 +1046,25 @@ UserController.removeAdminById = function (id, user, callback) {
  * @param  {Function} callback args(err, user)
  */
 UserController.makeJudgeById = function (id, user, callback) {
-  User.findOneAndUpdate({
-        _id: id,
-        verified: true
-      }, {
-        $set: {
-          'judge': true
-        }
-      }, {
-        new: true
-      },
-      callback);
+  User.find({
+    verified: true,
+    _id: id,
+  }, function (err, user){
+    var set = {
+      'judge': true,
+    };
+    if(user.judging === undefined){
+      set['judging'] = {};
+    }
+    User.findOneAndUpdate({
+      _id: id,
+      verified: true
+    }, {
+      $set: set
+    }, {
+      new: true
+    }, callback);
+  });
 };
 
 /**

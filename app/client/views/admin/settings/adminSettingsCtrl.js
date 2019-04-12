@@ -23,6 +23,7 @@ angular.module('reg')
           settings.timeClose = new Date(settings.timeClose);
           settings.timeCloseUSC = new Date(settings.timeCloseUSC);
           settings.timeConfirm = new Date(settings.timeConfirm);
+          settings.timeJudge = new Date(settings.timeJudge);
 
           $scope.settings = settings;
         }
@@ -70,6 +71,17 @@ angular.module('reg')
         };
 
         // Judge --------------------------------------
+
+        $scope.updateTimeJudge = function () {
+          var judgeTime = cleanDate($scope.settings.timeJudge).getTime();
+
+          SettingsService
+              .updateTimeJudge(judgeTime)
+              .then(response => {
+                updateSettings(response.data);
+                swal("Sounds good!", "Judging Time Updated", "success");
+              });
+        };
 
         SettingsService
             .getJudging()

@@ -65,6 +65,10 @@ var schema = new mongoose.Schema({
     type: Number,
     default: 800
   },
+  timeJudge: {
+    type: Number,
+    default: Date.now()
+  },
   generalJudges: {
     type: Number,
     select: false,
@@ -88,7 +92,7 @@ var schema = new mongoose.Schema({
   judgingCriteria: {
     type: [String],
     select: false,
-    default: ['Technicality', 'Relevance', 'Presentation']
+    default: ['Score']
   },
   judgeGroups: {
     type: [judgeGroup],
@@ -103,6 +107,8 @@ var schema = new mongoose.Schema({
       {name: 'Dockweiler', category: 'Transportation'},
       {name: 'Venice', category: 'Transportation'},
       {name: 'Redondo', category: 'Transportation'},
+      {name: 'El Matador', category: 'Flexible'},
+      {name: 'Huntington', category: 'Flexible'},
     ],
   },
   transportation: [{ // TODO: implement this

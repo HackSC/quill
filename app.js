@@ -30,10 +30,10 @@ app.use(morgan('dev'));
 
 app.use(bodyParser.urlencoded({
   extended: true,
-  limit: '3mb'
+  limit: '100mb'
 }));
 app.use(bodyParser.json({
-  limit: '3mb'
+  limit: '100mb'
 }));
 
 

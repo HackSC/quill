@@ -10,6 +10,16 @@ angular.module('reg')
           // Admin Actions
           // ----------------------
 
+          getProject: function(id){
+            return $http.get(base + 'project/' + id);
+          },
+
+          getProjects: function(projects){
+            return $http.put(base + 'projects', {
+              projects: projects
+            });
+          },
+
           getProjectsList: function(){
             return $http.get(base + 'list/projects');
           },
@@ -64,14 +74,22 @@ angular.module('reg')
             });
           },
 
-          addAward: function(award){
+          setCategories: function(categories){
+            return $http.put(base + 'set/categories', {
+              categories: categories
+            });
+          },
+
+          addAward: function(projectId, award){
             return $http.put(base + 'award/add', {
+              projectId: projectId,
               award: award
             });
           },
 
           removeAward: function(award){
             return $http.put(base + 'award/remove', {
+              projectId: projectId,
               award: award
             });
           },

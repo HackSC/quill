@@ -63,6 +63,11 @@ angular.module('reg')
           reviewCriteria: reviewCriteria
         });
       },
+      updateTimeJudge: function(time){
+        return $http.put(base + 'timeJudge', {
+          time: time
+        });
+      },
       getJudging: function(){
         return $http.get(base + 'judging')
       },

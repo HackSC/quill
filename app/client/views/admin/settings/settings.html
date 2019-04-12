@@ -141,6 +141,20 @@
   <div class="column">
     <div class="ui form">
       <div class="field">
+        <label>
+          Judging Begins : {{ formatDate(settings.timeJudge) }}
+        </label>
+        <input type="datetime-local" ng-model="settings.timeJudge">
+      </div>
+
+      <div class="ui field">
+        <div
+                class="ui green button"
+                ng-click="updateTimeJudge()">
+          Update
+        </div>
+      </div>
+      <div class="field">
         <label>General Judges per Application</label>
         <div class="ui input">
           <input

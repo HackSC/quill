@@ -54,9 +54,9 @@ var schema = new mongoose.Schema({
 
   fileUrl : String,
 
-  desiredPrizes : [String],
-
   vertical: String,
+
+  desiredPrizes : [String],
 
   builtWith : [String],
 
@@ -72,6 +72,8 @@ var schema = new mongoose.Schema({
   awards: [String],
 
   table: Number,
+
+  time: Number,
 });
 
 module.exports = mongoose.model('Project', schema);

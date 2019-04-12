@@ -259,6 +259,7 @@ var judging = {
         type: String,
         enum: {
             values: [
+                '',
                 'General',
                 'Sponsor',
             ],
@@ -275,14 +276,19 @@ var judging = {
     // For sponsor judges
     categories: [String],
 
-    queue: [String],
+    queue: [{
+        id: String,
+        judged: {
+            type: Boolean,
+            default: false,
+        }
+    }],
 
     count: {
         type: Number,
         default: 0
     },
 
-    select: false,
 };
 
 // define the schema for our admin model
@@ -370,12 +376,9 @@ var schema = new mongoose.Schema({
     review: review,
 
     /**
-     * Only Judges are allowed to review
+     * Only Judges are allowed to judge
      */
     judging: judging,
-},{
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true }
 });
 
 //=========================================
