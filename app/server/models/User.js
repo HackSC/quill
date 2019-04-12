@@ -379,6 +379,9 @@ var schema = new mongoose.Schema({
      * Only Judges are allowed to judge
      */
     judging: judging,
+}, {
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true }
 });
 
 //=========================================
