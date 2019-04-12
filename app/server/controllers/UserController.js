@@ -10,7 +10,7 @@ var moment = require('moment');
 var UserController = {};
 
 var maxTeamSize = process.env.TEAM_MAX_SIZE || 4;
-
+var adminEmail = process.env.ADMIN_EMAIL;
 
 // Tests a string if it ends with target s
 function endsWith(s, test) {
@@ -43,7 +43,7 @@ function canRegister(email, password, callback) {
       });
     }
 
-    if (now > times.timeClose) {
+    if (now > Math.max(times.timeClose, times.timeCloseUSC)) {
       return callback({
         message: "Sorry, registration is closed."
       });
@@ -248,6 +248,44 @@ UserController.getPage = function (query, admin, callback) {
     findQuery["$or"] = queries
   }
 
+  var getStatus = function (user) {
+
+    if(user.status.checkedIn) {
+      return 'checked in';
+    }
+
+    if (user.status.declined) {
+      return "declined";
+    }
+
+    if (user.status.confirmed) {
+      return "confirmed";
+    }
+
+    if (user.status.admitted) {
+      return "admitted";
+    }
+
+    if (user.status.rejected) {
+      return "rejected";
+    }
+
+    if (user.status.waitlisted) {
+      return "waitlisted";
+    }
+
+    if (user.status.submitted) {
+      return "submitted";
+    }
+
+    if (!user.verified) {
+      return "unverified";
+    }
+
+    return "incomplete";
+
+  };
+
   User
       .aggregate()
       .addFields({
@@ -267,6 +305,10 @@ UserController.getPage = function (query, admin, callback) {
           if (err) {
             return callback(err);
           }
+
+          users.forEach(user => {
+            user.status.name = getStatus(user);
+          });
 
           return callback(null, {
             users: users,
@@ -312,7 +354,7 @@ UserController.updateProfileById = function (id, profile, callback) {
       });
     }
 
-    if (now > times.timeClose) {
+    if (now > Math.max(times.timeClose, times.timeCloseUSC)) {
       return callback({
         message: "Sorry, registration is closed."
       });
@@ -368,7 +410,7 @@ UserController.submitById = function (id, profile, callback) {
         });
       }
 
-      if (now > times.timeClose) {
+      if (now > Math.max(times.timeClose, times.timeCloseUSC)) {
         return callback({
           message: "Sorry, registration is closed."
         });
@@ -389,7 +431,29 @@ UserController.submitById = function (id, profile, callback) {
         },
         {
           new: true
-        }, callback);
+        }, function(err, user){
+          if(err){
+            return callback(err);
+          }
+          // check for auto decide
+          Settings.getPublicSettings(function(err, settings){
+            if(err){
+              return callback(err);
+            }
+
+            var adminUser = {email: adminEmail};
+
+            if(settings.autoDecide === 'Accept'){
+              UserController.admitUser(user._id, adminUser, callback);
+            }else if(settings.autoDecide === 'Waitlist'){
+              UserController.waitlistUser(user._id, adminUser, callback);
+            }else if(settings.autoDecide === 'Reject'){
+              UserController.rejectUser(user._id, adminUser, callback);
+            }else{
+              callback(err, user);
+            }
+          });
+        });
 
   });
 };

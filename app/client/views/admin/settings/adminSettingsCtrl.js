@@ -42,6 +42,18 @@ angular.module('reg')
               });
         };
 
+      $scope.updateAutoDecide = function () {
+        SettingsService
+            .updateAutoDecide($scope.settings.autoDecide)
+            .then(response => {
+              $scope.settings.autoDecide = response.data.autoDecide;
+              const successText = $scope.settings.autoDecide !== '' ?
+                  "Are now auto " + $scope.settings.autoDecide + "ing" :
+                  "Not auto deciding";
+              swal("Looks good!", successText, "success");
+            });
+      };
+
         $scope.updateAdmissions = function () {
           SettingsService
               .updateAdmissions($scope.settings.admissions)

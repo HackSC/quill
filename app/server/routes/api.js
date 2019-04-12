@@ -494,6 +494,11 @@ module.exports = function(router) {
     SettingsController.updateRegistrationTimes(open, close, closeUSC, defaultResponse(req, res));
   });
 
+  router.put('/settings/autoDecide', isAdmin, function(req, res){
+    var autoDecide = req.body.autoDecide;
+    SettingsController.updateAutoDecide(autoDecide, defaultResponse(req, res));
+  });
+
   /**
    * Get the whitelisted emails.
    *

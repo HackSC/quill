@@ -10,7 +10,7 @@ angular.module('reg')
       // Get the current user's most recent data.
       var Settings = settings.data;
 
-      $scope.regIsOpen = Utils.isRegOpen(Settings);
+      $scope.regIsOpen = Utils.isRegOpen(Settings, currentUser.data.email);
 
       $scope.user = currentUser.data;
 

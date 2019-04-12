@@ -21,6 +21,11 @@ angular.module('reg')
           time: time
         });
       },
+      updateAutoDecide: function (autoDecide){
+        return $http.put(base + 'autoDecide', {
+          autoDecide: autoDecide
+        });
+      },
       getWhitelistedEmails: function(){
         return $http.get(base + 'whitelist');
       },

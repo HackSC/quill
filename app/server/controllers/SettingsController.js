@@ -8,22 +8,22 @@ var SettingsController = {};
  * @param  {Any}      value    Value to replace it to
  * @param  {Function} callback args(err, settings)
  */
-SettingsController.updateField = function(field, value, callback){
+SettingsController.updateField = function (field, value, callback) {
   var update = {};
   update[field] = value;
   Settings
-    .findOneAndUpdate({},{
-      $set: update
-    }, {new: true}, callback);
+      .findOneAndUpdate({}, {
+        $set: update
+      }, {new: true}, callback);
 };
 
-SettingsController.getReview = function(callback){
+SettingsController.getReview = function (callback) {
   Settings.getReview(callback);
 };
 
-SettingsController.updateReview = function(reviewers, reviewCriteria, callback){
+SettingsController.updateReview = function (reviewers, reviewCriteria, callback) {
   Settings
-      .findOneAndUpdate({},{
+      .findOneAndUpdate({}, {
         $set: {
           reviewers: reviewers,
           reviewCriteria: reviewCriteria
@@ -33,13 +33,14 @@ SettingsController.updateReview = function(reviewers, reviewCriteria, callback){
       .exec(callback);
 };
 
+
 SettingsController.getJudging = function(callback){
   Settings.getJudging(callback);
 };
 
 SettingsController.updateJudging = function(generalJudges, sponsorJudges, generalJudgingCategories, sponsorJudgingCategories, judgingCriteria, judgeGroups, callback){
   Settings
-      .findOneAndUpdate({},{
+      .findOneAndUpdate({}, {
         $set: {
           generalJudges: generalJudges,
           sponsorJudges: sponsorJudges,
@@ -58,15 +59,15 @@ SettingsController.updateJudging = function(generalJudges, sponsorJudges, genera
  * @param  {[type]}   emails   [description]
  * @param  {Function} callback args(err, settings)
  */
-SettingsController.updateWhitelistedEmails = function(emails, callback){
+SettingsController.updateWhitelistedEmails = function (emails, callback) {
   Settings
-    .findOneAndUpdate({},{
-      $set: {
-        whitelistedEmails: emails
-      }
-    }, {new: true})
-    .select('whitelistedEmails')
-    .exec(callback);
+      .findOneAndUpdate({}, {
+        $set: {
+          whitelistedEmails: emails
+        }
+      }, {new: true})
+      .select('whitelistedEmails')
+      .exec(callback);
 };
 
 /**
@@ -74,7 +75,7 @@ SettingsController.updateWhitelistedEmails = function(emails, callback){
  * Whitelist emails are by default not included in settings.
  * @param  {Function} callback args(err, emails)
  */
-SettingsController.getWhitelistedEmails = function(callback){
+SettingsController.getWhitelistedEmails = function (callback) {
   Settings.getWhitelistedEmails(callback);
 };
 
@@ -85,39 +86,49 @@ SettingsController.getWhitelistedEmails = function(callback){
  * @param  {Number}   close    Close time in ms
  * @param  {Function} callback args(err, settings)
  */
-SettingsController.updateRegistrationTimes = function(open, close, closeUSC, callback){
+SettingsController.updateRegistrationTimes = function (open, close, closeUSC, callback) {
   var updatedTimes = {};
 
-  if (close <= open || closeUSC <= open){
+  if (close <= open || closeUSC <= open) {
     return callback({
       message: "Registration cannot close before or at exactly the same time it opens."
     });
   }
 
-  if (open){
+  if (open) {
     updatedTimes.timeOpen = open;
   }
 
-  if (close){
+  if (close) {
     updatedTimes.timeClose = close;
   }
 
-  if (closeUSC){
+  if (closeUSC) {
     updatedTimes.timeCloseUSC = closeUSC;
   }
 
   Settings
-    .findOneAndUpdate({},{
-      $set: updatedTimes
-    }, {new: true}, callback);
+      .findOneAndUpdate({}, {
+        $set: updatedTimes
+      }, {new: true}, callback);
 };
 
 /**
  * Get the open and close time for registration.
  * @param  {Function} callback args(err, times : {timeOpen, timeClose})
  */
-SettingsController.getRegistrationTimes = function(callback){
+SettingsController.getRegistrationTimes = function (callback) {
   Settings.getRegistrationTimes(callback);
+};
+
+SettingsController.updateAutoDecide = function (autoDecide, callback) {
+  Settings
+      .findOneAndUpdate({}, {
+        $set: {
+          autoDecide: autoDecide
+        }
+      }, {new: true})
+      .exec(callback);
 };
 
 /**
@@ -125,7 +136,7 @@ SettingsController.getRegistrationTimes = function(callback){
  * @param  {Function} callback [description]
  * @return {[type]}            [description]
  */
-SettingsController.getPublicSettings = function(callback){
+SettingsController.getPublicSettings = function (callback) {
   Settings.getPublicSettings(callback);
 };
 
