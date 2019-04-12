@@ -5,25 +5,18 @@ var database = process.env.DATABASE || "mongodb://localhost:27017";
 mongoose.connect(database, {useNewUrlParser: true});
 
 var User = require('../app/server/models/User');
+var Settings = require('../app/server/models/Settings');
 var stringify = require('csv-stringify');
+var fs = require('fs');
 
-var verticals = ['Entrepreneurship', 'Entertainment', 'Transportation'];
-var categories = ['Sponsor 1: Most Impactful', 'Sponsor 2: Best Use API', 'Sponsor 2: Runner Up'];
-var groups = [
-  {name: 'Malibu', category: 'Entrepreneurship'},
-  {name: 'Zuma', category: 'Entrepreneurship'},
-  {name: 'Hermosa', category: 'Entrepreneurship'},
-  {name: 'Manhattan', category: 'Entertainment'},
-  {name: 'Paradise Cove', category: 'Entertainment'},
-  {name: 'Santa Monica', category: 'Entertainment'},
-  {name: 'Dockweiler', category: 'Transportation'},
-  {name: 'Venice', category: 'Transportation'},
-  {name: 'Redondo', category: 'Transportation'},
-  {name: 'El Matador', category: 'Flexible'},
-  {name: 'Huntington', category: 'Flexible'},
-];
+Settings.getJudging(function(err, settings){
+  create(settings);
+  generateData(settings);
+});
 
-var create = function () {
+var create = function (settings) {
+  var groups = settings.judgeGroups;
+  var categories = settings.sponsorJudgingCategories;
   var users = 50;
   var username = 'judge';
   var sponsors = 10;
@@ -33,8 +26,8 @@ var create = function () {
     let password = 'foobar';
 
     let role = (i < users - sponsors) ? 'General' : 'Sponsor';
-    let group = groups[i % 11].name;
-    let category = categories[i % 3];
+    let group = groups[i % groups.length].name;
+    let category = categories[i % categories.length];
 
     // create new user
     var u = new User();
@@ -109,61 +102,64 @@ var create = function () {
 
 
 // create csv
-var fs = require('fs');
-let stream = fs.createWriteStream('scripts/data/devpost-test.csv');
-stream.once('open', fd => {
-  stream.write('Submission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\n');
-  var projects = [];
-  for (let i = 1; i <= 1000; i++) {
-    let vertical = verticals[i % 3];
-    let category = categories[i % 3];
-    projects.push([
-      'Project' + i,
-      'https://hacksc.com',
-      'Submission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\nSubmission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\nSubmission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\nSubmission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\nSubmission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\n',
-      'video',
-      'https://apply.hacksc.com',
-      '',
-      vertical,
-      category,
-      'Node.js',
-      'submitter' + i,
-      'Submitter' + i,
-      'Last Name',
-      'submitter' + i + '@school.edu',
-      'USC',
-      '0',
-    ]);
-  }
-  exportCSV(projects, function (err, data) {
-    if (err) {
-      console.log(err);
+var generateData = function (settings) {
+  var verticals = settings.generalJudgingCategories;
+  var categories = settings.sponsorJudgingCategories;
+  let stream = fs.createWriteStream('scripts/data/devpost-test.csv');
+  stream.once('open', fd => {
+    stream.write('Submission Title,Submission Url,Plain Description,Video,Website,File Url,Desired Prizes,Built With,Select Vertical Prize Category,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\n');
+    var projects = [];
+    for (let i = 1; i <= 300; i++) {
+      let vertical = verticals[i % verticals.length];
+      let category = categories[i % categories.length];
+      projects.push([
+        'Project' + i,
+        'https://hacksc.com',
+        'Submission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\nSubmission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\nSubmission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\nSubmission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\nSubmission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\n',
+        'video',
+        'https://apply.hacksc.com',
+        '',
+        category,
+        'Node.js',
+        vertical,
+        'submitter' + i,
+        'Submitter' + i,
+        'Last Name',
+        'submitter' + i + '@school.edu',
+        'USC',
+        '0',
+      ]);
     }
-    stream.write(data.join(''));
-    console.log('done writing');
-    stream.close();
+    exportCSV(projects, function (err, data) {
+      if (err) {
+        console.log(err);
+      }
+      stream.write(data.join(''));
+      console.log('done writing');
+      stream.close();
+    });
   });
-});
 
-var exportCSV = function (projects, callback) {
-  let data = [];
-  let stringifier = stringify({
-    delimiter: ','
-  });
-  stringifier.on('readable', function () {
-    let row;
-    while (row = stringifier.read()) {
-      data.push(row)
-    }
-  });
-  stringifier.on('error', function (err) {
-    callback(err);
-  });
-  stringifier.on('finish', function () {
-    callback(null, data);
-  });
-  projects.forEach(function (project) {
-    stringifier.write(project)
-  });
-  stringifier.end()
+  var exportCSV = function (projects, callback) {
+    let data = [];
+    let stringifier = stringify({
+      delimiter: ','
+    });
+    stringifier.on('readable', function () {
+      let row;
+      while (row = stringifier.read()) {
+        data.push(row)
+      }
+    });
+    stringifier.on('error', function (err) {
+      callback(err);
+    });
+    stringifier.on('finish', function () {
+      callback(null, data);
+    });
+    projects.forEach(function (project) {
+      stringifier.write(project)
+    });
+    stringifier.end()
+  };
 };

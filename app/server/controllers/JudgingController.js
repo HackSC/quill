@@ -172,9 +172,9 @@ JudgingController.uploadSubmissionsData = function (data, callback) {
         p.video = val[3];
         p.website = val[4];
         p.fileUrl = val[5];
-        p.vertical = val[6];
-        p.desiredPrizes = val[7].split(',').map(v => v.trim());
-        p.builtWith = val[8].split(',').map(v => v.trim());
+        p.desiredPrizes = val[6].split(',').map(v => v.trim());
+        p.builtWith = val[7].split(',').map(v => v.trim());
+        p.vertical = val[8];
         p.submitter = {
           screenName: val[9],
           firstName: val[10],
