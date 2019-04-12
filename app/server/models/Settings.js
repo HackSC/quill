@@ -145,7 +145,7 @@ schema.statics.getReview = function (callback) {
 schema.statics.getJudging = function (callback) {
   this
       .findOne({})
-      .select('generalJudges sponsorJudges generalJudgingCategories sponsorJudgingCategories judgingCriteria judgeGroups')
+      .select('timeJudge generalJudges sponsorJudges generalJudgingCategories sponsorJudgingCategories judgingCriteria judgeGroups')
       .exec(function (err, settings) {
         return callback(err, settings);
       });

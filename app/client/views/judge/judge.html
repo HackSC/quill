@@ -3,7 +3,7 @@
     Judging
   </div>
 
-  <div class=""
+  <div
        ng-show="user.admin"
        ng-class="{'loading': loading}">
     <!--List Modal-->
@@ -100,18 +100,6 @@
                     ({{group.category}})
                   </option>
                 </select>
-                <!--<div class="ui fluid multiple selection dropdown"-->
-                <!--ng-show="user.judging.role == 'Sponsor'">-->
-                <!--<input id="categories" name="categories" type="hidden"-->
-                <!--onchange="angular.element(this).scope().setCategories(this)">-->
-                <!--<i class="dropdown icon"></i>-->
-                <!--<div class="default text">Category</div>-->
-                <!--<div class="menu">-->
-                <!--<div class="item" ng-repeat="category in settings.sponsorJudgingCategories" data-value="{{category}}">-->
-                <!--{{category}}-->
-                <!--</div>-->
-                <!--</div>-->
-                <!--</div>-->
                 <select class="ui dropdown"
                         id="categories"
                         multiple=""
@@ -140,22 +128,23 @@
           <!--Show all-->
           <div
                   ng-show="showAll">
-            <div class="ui cards">
-              <div class="card"
-                   ng-repeat="project in projects">
+            <div class="ui centered cards">
+              <div class="ui card"
+                   ng-repeat="project in sortScore(projects)">
                 <div class="content">
                   <img class="right floated mini ui image" src="">
                   <div class="header">
-                    {{project.name}}
+                    {{project.submissionTitle}}
                   </div>
                   <div class="meta">
                     Table {{project.table}}
                   </div>
                   <div class="description">
-                    Test
+                    <a href="{{project.submissionUrl}}">Devpost</a>
                   </div>
                 </div>
-                <div class="extra content">
+                <div class="extra content"
+                    ng-show="user.judging.role === 'Sponsor'">
                   <select
                           ng-model="project.award"
                           ng-change="setAward($index)">
@@ -179,7 +168,7 @@
               <br>
               <div class="divided title"> {{currentProject.submissionTitle}}</div>
               <div ng-show="user.judging.role == 'General'">
-                <p>Time on: {{currentProject.time}}</p>
+                <p>Time on: {{formatTimeShort(currentProject.time)}}</p>
               </div>
               <div ng-show="user.judging.role == 'Sponsor'">
                 <p>Table: {{currentProject.table}}</p>

@@ -564,7 +564,7 @@ module.exports = function(router) {
    *   time: Number
    * }
    */
-  router.put('/settings/confirm-by', isAdmin, function(req, res){
+  router.put('/settings/timeJudge', isAdmin, function(req, res){
     var time = req.body.time;
     SettingsController.updateField('timeJudge', time, defaultResponse(req, res));
   });

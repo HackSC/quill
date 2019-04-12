@@ -90,11 +90,16 @@ JudgingController.getProject = function (id, callback) {
  * @param callback
  */
 JudgingController.getProjects = function (projects, callback) {
-  console.log(projects);
-  var idArray = projects.map(e => ({_id: e}));
-  Project.find({
-    $or: idArray
-  }, callback);
+  if (projects === undefined || projects.length <= 0) {
+    console.log('test');
+    return callback();
+  } else {
+    console.log(projects);
+    var idArray = projects.map(e => ({_id: e}));
+    Project.find({
+      $or: idArray
+    }, callback);
+  }
 };
 
 /**
@@ -143,13 +148,8 @@ JudgingController.uploadSubmissionsData = function (data, callback) {
       judge: true,
     }, {
       $set: {
-        'judging': {
-          role: '',
-          group: '',
-          categories: [],
-          queue: [],
-          count: 0
-        }
+        'judging.queue': [],
+        'judging.count': 0,
       }
     }, function (err) {
       if (err) {
@@ -165,51 +165,50 @@ JudgingController.uploadSubmissionsData = function (data, callback) {
       // remove first item
       output.shift();
       // Add into projects
-      for (let i = 1; i <= output.length; i++) {
-        output.forEach(val => {
-          let p = new Project();
-          p.submissionTitle = val[0];
-          p.submissionUrl = val[1];
-          p.plainDescription = val[2];
-          p.video = val[3];
-          p.website = val[4];
-          p.fileUrl = val[5];
-          p.vertical = val[6];
-          p.desiredPrizes = val[7].split(',').map(v => v.trim());
-          p.builtWith = val[8].split(',').map(v => v.trim());
-          p.submitter = {
-            screenName: val[9],
-            firstName: val[10],
-            lastName: val[11],
-            email: val[12],
-          };
-          p.schools = val[13].split(',').map(v => v.trim());
-          p.teammates = [];
-          p.judging = {
-            judges: [],
-            overallScore: 0,
-          };
-          p.awards = [];
-          p.table = i;
-          p.time = 0;
+      for (let i = 0; i < output.length; i++) {
+        let val = output[i];
+        let p = new Project();
+        p.submissionTitle = val[0];
+        p.submissionUrl = val[1];
+        p.plainDescription = val[2];
+        p.video = val[3];
+        p.website = val[4];
+        p.fileUrl = val[5];
+        p.vertical = val[6];
+        p.desiredPrizes = val[7].split(',').map(v => v.trim());
+        p.builtWith = val[8].split(',').map(v => v.trim());
+        p.submitter = {
+          screenName: val[9],
+          firstName: val[10],
+          lastName: val[11],
+          email: val[12],
+        };
+        p.schools = val[13].split(',').map(v => v.trim());
+        p.teammates = [];
+        p.judging = {
+          judges: [],
+          overallScore: 0,
+        };
+        p.awards = [];
+        p.table = i+1;
+        p.time = 0;
 
-          // add teammates
-          let numTeammates = val[14];
-          for (let j = 0; j < numTeammates; j++) {
-            let index = 4 * j;
-            p.teammates.push({
-              screenName: val[14 + index + 1],
-              firstName: val[14 + index + 2],
-              lastName: val[14 + index + 3],
-              email: val[14 + index + 4],
-            });
-          }
-
-          p.save(function (err) {
-            if (err) {
-              console.log(err);
-            }
+        // add teammates
+        let numTeammates = val[14];
+        for (let j = 0; j < numTeammates; j++) {
+          let index = 4 * j;
+          p.teammates.push({
+            screenName: val[14 + index + 1],
+            firstName: val[14 + index + 2],
+            lastName: val[14 + index + 3],
+            email: val[14 + index + 4],
           });
+        }
+
+        p.save(function (err) {
+          if (err) {
+            console.log(err);
+          }
         });
       }
       callback();
@@ -361,6 +360,8 @@ JudgingController.assignJudging = function (callback) {
     });
 
 
+    console.log(categoryGroups);
+
     // Assign Group Judging
     categoryGroups.forEach(function (judgeGroups, category) {
       // Find projects in each category
@@ -368,11 +369,15 @@ JudgingController.assignJudging = function (callback) {
         vertical: category
       }, function (err, projects) {
         if (err) {
+          console.log(err);
           return callback(err);
         }
 
         let groupIndex = 0;
-        let callTime = settings.timeJudge;
+        var callTime = settings.timeJudge;
+        console.log('calltime:');
+        console.log(callTime);
+        console.log(settings);
         for (let i = 0; i < projects.length; i++) {
           // combine them in to appropriate judges format
           let judges = judgeGroups[groupIndex].judges;
@@ -393,6 +398,7 @@ JudgingController.assignJudging = function (callback) {
             new: true
           }, function (err) {
             if (err) {
+              console.log(err);
               return callback(err);
             }
           });
@@ -415,6 +421,7 @@ JudgingController.assignJudging = function (callback) {
               new: true
             }, function (err) {
               if (err) {
+                console.log(err);
                 return callback(err);
               }
             });
@@ -430,6 +437,8 @@ JudgingController.assignJudging = function (callback) {
         }
       });
     });
+
+    console.log('assigning sponsors');
 
     // Assign Individual Judging
     sponsorJudges.forEach(function (judge) {
@@ -555,7 +564,12 @@ JudgingController.updateJudging = function (projectId, judgeId, scores, comments
   }, {
     new: true,
   }, function (err, judgeUser) {
+    console.log(judgeUser);
     if (err) {
+      return callback(err);
+    }
+
+    if(!judgeUser){
       return callback(err);
     }
 
