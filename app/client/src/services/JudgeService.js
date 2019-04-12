@@ -87,7 +87,7 @@ angular.module('reg')
             });
           },
 
-          removeAward: function(award){
+          removeAward: function(projectId, award){
             return $http.put(base + 'award/remove', {
               projectId: projectId,
               award: award

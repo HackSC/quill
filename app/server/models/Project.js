@@ -38,6 +38,11 @@ var judging = {
     default: 0,
   },
 
+  group: {
+    type: String,
+    default: 0
+  }
+
 };
 
 var schema = new mongoose.Schema({

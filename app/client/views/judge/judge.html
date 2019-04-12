@@ -4,27 +4,45 @@
   </div>
 
   <div
-       ng-show="user.admin"
-       ng-class="{'loading': loading}">
+          ng-show="user.admin"
+          ng-class="{'loading': loading}">
     <!--List Modal-->
-    <div class="ui modal">
-      <div class="header">Judging List</div>
+    <div class="ui modal" id="judgesModal">
+      <div class="header">Judges List</div>
       <div class="content">
         <div class="ui list">
           <div class="item">
             <strong>Judges</strong>
           </div>
           <div class="item" ng-repeat="judge in judgesList">
-            {{judge.profile.name ? judge.profile.name : judge.email}} : {{judge.judging.queue.length}}
+            {{judge.profile.name ? judge.profile.name : judge.email}} ({{judge.judging.role}}{{judge.judging.role ===
+            'General' ? '-' + judge.judging.group : ''}}) : {{judge.judging.queue.length}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui modal" id="projectsModal">
+      <div class="header">Projects List</div>
+      <div class="content">
+        <div class="ui list">
+          <div class="item">
+            <strong>Projects</strong>
+          </div>
+          <div class="item" ng-repeat="project in allProjects">
+            {{project.submissionTitle}}: <a href="{{project.submissionUrl}}">Devpost</a>, Table {{project.table}}
           </div>
         </div>
       </div>
     </div>
 
     <div>
-      <div class="five column centered row">
-        <button class="ui icon basic button column" ng-click="showModal()">
+      <div class="six column centered row">
+        <button class="ui icon basic button column" ng-click="showJudgesModal()">
           <i class="user icon"></i>
+        </button>
+        <button class="ui icon basic button column" ng-click="showProjectsModal()">
+          <i class="list icon"></i>
         </button>
         <button class="ui blue inverted button column">
           <label for="devpost" class="devpostInput"> Upload </label>
@@ -119,7 +137,8 @@
         <!--Empty-->
         <div ng-show="projects.length == 0">
           <p>
-            There's nothing here! Either you haven't selected your appropriate selections or projects haven't been assigned!
+            There's nothing here! Either you haven't selected your appropriate selections or projects haven't been
+            assigned!
             Find or message any organizer, and we'll help you right away.
           </p>
         </div>
@@ -130,21 +149,31 @@
                   ng-show="showAll">
             <div class="ui centered cards">
               <div class="ui card"
-                   ng-repeat="project in sortScore(projects)">
+                   ng-class="$index < 5 ? 'red' : ''"
+                   ng-repeat="project in sortedProjects">
                 <div class="content">
-                  <img class="right floated mini ui image" src="">
+                  <div class="ui right floated mini icon" ng-click="showProject(project._id)">
+                    <i class="external icon"></i>
+                  </div>
                   <div class="header">
                     {{project.submissionTitle}}
                   </div>
                   <div class="meta">
-                    Table {{project.table}}
+                    <div ng-show="user.judging.role === 'Sponsor'">
+                      Table {{project.table}}
+                    </div>
+                    <div ng-show="user.judging.role === 'General'">
+                      Rank: {{$index+1}}
+                    </div>
                   </div>
                   <div class="description">
-                    <a href="{{project.submissionUrl}}">Devpost</a>
+                    <a href="{{project.submissionUrl}}" target="_blank">Devpost</a>
+                    <br>
+                    Comments: {{getJudgingFromEmail(project, user.email).comments}}
                   </div>
                 </div>
                 <div class="extra content"
-                    ng-show="user.judging.role === 'Sponsor'">
+                     ng-show="user.judging.role === 'Sponsor'">
                   <select
                           ng-model="project.award"
                           ng-change="setAward($index)">
@@ -173,17 +202,27 @@
               <div ng-show="user.judging.role == 'Sponsor'">
                 <p>Table: {{currentProject.table}}</p>
               </div>
-              <a href="{{currentProject.submissionUrl}}">Devpost</a>
+              <a href="{{currentProject.submissionUrl}}" target="_blank">Devpost</a>
             </div>
 
             <br>
 
             <!--Judging-->
             <div class="ui centered">
-              <div ng-repeat="criteria in settings.judgingCriteria">
+              <div
+                      ng-show="user.judging.role === 'General'">
+                <div ng-repeat="criteria in settings.judgingCriteria">
+                  <div class="field">
+                    <label>{{criteria}}</label>
+                    <input type="number" min="{{scoresRange[0]}}" max="{{scoresRange[1]}}" ng-model="scores[$index]">
+                  </div>
+                </div>
+              </div>
+              <div
+                      ng-show="user.judging.role === 'Sponsor'">
                 <div class="field">
-                  <label>{{criteria}}</label>
-                  <input type="number" min="{{scoresRange[0]}}" max="{{scoresRange[1]}}" ng-model="scores[$index]">
+                  <label>Score</label>
+                  <input type="number" min="{{scoresRange[0]}}" max="{{scoresRange[1]}}" ng-model="sponsorScore">
                 </div>
               </div>
               <div class="field">

@@ -577,7 +577,7 @@ module.exports = function(router) {
    *   emails: [String]
    * }
    */
-  router.get('/settings/judging', isAdmin, function(req, res){
+  router.get('/settings/judging', isJudgeOrAdmin, function(req, res){
     SettingsController.getJudging(defaultResponse(req, res));
   });
 
