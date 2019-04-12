@@ -324,6 +324,51 @@ angular.module('reg')
         }
       };
 
+      $scope.toggleJudge = function($event, user, index) {
+        $event.stopPropagation();
+
+        if (!user.judge){
+          swal({
+            title: "Whoa, wait a minute!",
+            text: "You are about make " + user.profile.name + " a judge!",
+            icon: "warning",
+            buttons: {
+              cancel: {
+                text: "Cancel",
+                value: null,
+                visible: true
+              },
+              confirm: {
+                text: "Yes, make them an judge",
+                className: "danger-button",
+                closeModal: false,
+                value: true,
+                visible: true
+              }
+            }
+          }).then(value => {
+                if (!value) {
+                  return;
+                }
+
+                UserService
+                    .makeJudge(user._id)
+                    .then(response => {
+                      $scope.users[index] = response.data;
+                      swal("Made", response.data.profile.name + ' an judge.', "success");
+                    });
+              }
+          );
+        } else {
+          UserService
+              .removeJudge(user._id)
+              .then(response => {
+                $scope.users[index] = response.data;
+                swal("Removed", response.data.profile.name + ' as judge', "success");
+              });
+        }
+      };
+
       function formatTime(time){
         if (time) {
           return moment(time).format('MMMM Do YYYY, h:mm:ss a');

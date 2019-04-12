@@ -3,8 +3,8 @@
 
     <!-- Registration Open/Close -->
     <div
-      ng-class="{'loading': loading}"
-      class="ui purple segment">
+            ng-class="{'loading': loading}"
+            class="ui purple segment">
       <div class="ui form">
 
         <div class="ui header">
@@ -38,8 +38,8 @@
 
         <div class="ui field">
           <div
-            class="ui green button"
-            ng-click="updateRegistrationTimes()">
+                  class="ui green button"
+                  ng-click="updateRegistrationTimes()">
             Update
           </div>
         </div>
@@ -51,8 +51,8 @@
 
     <!-- Confirmation Date -->
     <div
-      ng-class="{'loading': loading}"
-      class="ui purple segment">
+            ng-class="{'loading': loading}"
+            class="ui purple segment">
       <div class="ui form">
 
         <div class="ui header">
@@ -72,8 +72,8 @@
 
         <div class="ui field">
           <div
-            class="ui green button"
-            ng-click="updateConfirmationTime()">
+                  class="ui green button"
+                  ng-click="updateConfirmationTime()">
             Update
           </div>
         </div>
@@ -83,109 +83,162 @@
   </div>
 </div>
 
-<div class="ui stackable two column grid">
+<!--Review-->
+<div
+        ng-class="{'loading': loading}"
+        class="ui purple segment">
+
+  <div class="ui header">
+    Review Options
+  </div>
+
   <div class="column">
-
-    <!--Review-->
-    <div
-            ng-class="{'loading': loading}"
-            class="ui purple segment">
-
-      <div class="ui header">
-        Review Options
+    <div class="ui form">
+      <div class="field">
+        <label>Number of Reviewers per Application</label>
+        <div class="ui input">
+          <input
+                  type="number"
+                  ng-model="reviewers">
+        </div>
       </div>
-
-      <div class="column">
-        <div class="ui form">
-          <div class="field">
-            <label>Number of Reviewers per Application</label>
-            <div class="ui input">
-              <input
-                      type="number"
-                      ng-model="reviewers">
-            </div>
-          </div>
-          <div class="field">
-            <label>Reviewing Criteria (Comma Separated)</label>
-            <div
-                    class="ui label"
-                    ng-repeat="criteria in reviewCriteria.replace(' ','').split(',')">
-              {{criteria}}
-            </div>
-            <div class="ui input">
+      <div class="field">
+        <label>Reviewing Criteria (Comma Separated)</label>
+        <div
+                class="ui label"
+                ng-repeat="criteria in reviewCriteria.replace(' ','').split(',')">
+          {{criteria}}
+        </div>
+        <div class="ui input">
               <textarea
                       class="ui input"
                       type="text"
                       ng-model="reviewCriteria">
               </textarea>
-            </div>
-          </div>
+        </div>
+      </div>
 
-          <div class="ui field">
-            <div
-                    class="ui green button"
-                    ng-click="updateReview()">
-              Update
-            </div>
-          </div>
+      <div class="ui field">
+        <div
+                class="ui green button"
+                ng-click="updateReview()">
+          Update
         </div>
       </div>
     </div>
-
   </div>
+</div>
+
+<!--Judge-->
+<div
+        ng-class="{'loading': loading}"
+        class="ui purple segment">
+
+  <div class="ui header">
+    Judging Options
+  </div>
+
   <div class="column">
-
-    <!--Judge-->
-    <div
-            ng-class="{'loading': loading}"
-            class="ui purple segment">
-
-      <div class="ui header">
-        Judge Options
+    <div class="ui form">
+      <div class="field">
+        <label>
+          Judging Begins : {{ formatDate(settings.timeJudge) }}
+        </label>
+        <input type="datetime-local" ng-model="settings.timeJudge">
       </div>
 
-      <div class="column">
-        <div class="ui form">
-          <div class="field">
-            <label>Number of Judges per Application</label>
-            <div class="ui input">
-              <input
-                      type="number"
-                      ng-model="judges">
-            </div>
-          </div>
-          <div class="field">
-            <label>Judging Criteria (Comma Separated)</label>
-            <div
-                    class="ui label"
-                    ng-repeat="criteria in judgeCriteria.replace(' ','').split(',')">
-              {{criteria}}
-            </div>
-            <textarea
-                    class="ui input"
-                    type="text"
-                    ng-model="judgeCriteria">
+      <div class="ui field">
+        <div
+                class="ui green button"
+                ng-click="updateTimeJudge()">
+          Update
+        </div>
+      </div>
+      <div class="field">
+        <label>General Judges per Application</label>
+        <div class="ui input">
+          <input
+                  type="number"
+                  ng-model="generalJudges">
+        </div>
+      </div>
+      <div class="field">
+        <label>General Judging Categories (Comma Separated)</label>
+        <div
+                class="ui label"
+                ng-repeat="category in generalJudgingCategories.replace(' ','').split(',')">
+          {{category}}
+        </div>
+        <textarea
+                class="ui input"
+                type="text"
+                ng-model="generalJudgingCategories">
             </textarea>
-          </div>
+      </div>
+      <div class="field">
+        <label>Sponsor Judges per Application</label>
+        <div class="ui input">
+          <input
+                  type="number"
+                  ng-model="sponsorJudges">
+        </div>
+      </div>
+      <div class="field">
+        <label>Sponsor Judging Categories (Comma Separated)</label>
+        <div
+                class="ui label"
+                ng-repeat="category in sponsorJudgingCategories.replace(' ','').split(',')">
+          {{category}}
+        </div>
+        <textarea
+                class="ui input"
+                type="text"
+                ng-model="sponsorJudgingCategories">
+            </textarea>
+      </div>
+      <div class="field">
+        <label>Judging Criteria (Comma Separated)</label>
+        <div
+                class="ui label"
+                ng-repeat="criteria in judgingCriteria.replace(' ','').split(',')">
+          {{criteria}}
+        </div>
+        <textarea
+                class="ui input"
+                type="text"
+                ng-model="judgingCriteria">
+            </textarea>
+      </div>
+      <div class="field">
+        <label>Judge Groups (Group Name-Category) (Comma Separated)</label>
+        <div
+                class="ui label"
+                ng-repeat="group in judgeGroups.replace(' ','').split(',')">
+          {{group.split('-')[0]}}
+          <div class="detail">{{group.split('-')[1]}}</div>
+        </div>
+        <textarea
+                class="ui input"
+                type="text"
+                ng-model="judgeGroups">
+            </textarea>
+      </div>
 
-          <div class="ui field">
-            <div
-                    class="ui green button"
-                    ng-click="updateJudge()">
-              Update
-            </div>
-          </div>
+      <div class="ui field">
+        <div
+                class="ui green button"
+                ng-click="updateJudging()">
+          Update
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
 <!--Additional Options-->
 <div
         ng-class="{'loading': loading}"
-class="ui purple segment">
+        class="ui purple segment">
 
   <div class="ui header">
     Additional Options
@@ -230,13 +283,14 @@ class="ui purple segment">
                           ng-model="settings.admissions">
               </div>
           </div>
-          <div class="ui field">
-            <div
-                    class="ui green button"
-                    ng-click="updateAdmissions()">
-              Update
-            </div>
+        </div>
+        <div class="ui field">
+          <div
+                  class="ui green button"
+                  ng-click="updateAdmissions()">
+            Update
           </div>
+        </div>
       </div>
     </div>
   </div>
@@ -244,17 +298,17 @@ class="ui purple segment">
 
 <!-- Whitelist -->
 <div
-  ng-class="{'loading': loading}"
-  class="ui purple segment">
+        ng-class="{'loading': loading}"
+        class="ui purple segment">
 
   <div class="ui header">
     Whitelisted Emails
   </div>
 
   <div class="ui form">
-   <div
-      class="ui label"
-      ng-repeat="email in whitelist.replace(' ','').split(',')">
+    <div
+            class="ui label"
+            ng-repeat="email in whitelist.replace(' ','').split(',')">
       {{email}}
     </div>
     <br>
@@ -265,8 +319,8 @@ class="ui purple segment">
     </div>
     <div class="field">
       <div
-        class="ui green button"
-        ng-click="updateWhitelist()">
+              class="ui green button"
+              ng-click="updateWhitelist()">
         Update
       </div>
     </div>
@@ -275,8 +329,8 @@ class="ui purple segment">
 
 <!-- Acceptance Text Editor -->
 <div
-  ng-class="{'loading': loading}"
-  class="ui green segment">
+        ng-class="{'loading': loading}"
+        class="ui green segment">
   <div class="ui header">
     Acceptance Text
   </div>
@@ -311,8 +365,8 @@ class="ui purple segment">
 
 <!-- Rejection Text Editor -->
 <div
-  ng-class="{'loading': loading}"
-  class="ui red segment">
+        ng-class="{'loading': loading}"
+        class="ui red segment">
   <div class="ui header">
     Rejection Text
   </div>
@@ -347,8 +401,8 @@ class="ui purple segment">
 
 <!-- Waitlist Text Editor -->
 <div
-  ng-class="{'loading': loading}"
-  class="ui blue segment">
+        ng-class="{'loading': loading}"
+        class="ui blue segment">
   <div class="ui header">
     Waitlist Text
   </div>
@@ -357,15 +411,15 @@ class="ui purple segment">
       <div class="ui form">
         <div class="field">
           <textarea
-            class="ui input"
-            type="text"
-            ng-model="settings.waitlistText">
+                  class="ui input"
+                  type="text"
+                  ng-model="settings.waitlistText">
           </textarea>
         </div>
         <div class="field">
           <div
-            class="ui green button"
-            ng-click="updateWaitlistText()">
+                  class="ui green button"
+                  ng-click="updateWaitlistText()">
             Update
           </div>
         </div>
@@ -373,8 +427,8 @@ class="ui purple segment">
     </div>
     <div class="column">
       <div
-        class="preview ui segment"
-        ng-bind-html="markdownPreview(settings.waitlistText)">
+              class="preview ui segment"
+              ng-bind-html="markdownPreview(settings.waitlistText)">
       </div>
     </div>
   </div>
@@ -383,8 +437,8 @@ class="ui purple segment">
 
 <!--Confirmation Text Editor-->
 <div
-  ng-class="{'loading': loading}"
-  class="ui orange segment">
+        ng-class="{'loading': loading}"
+        class="ui orange segment">
   <div class="ui header">
     Confirmation Text
   </div>
@@ -393,15 +447,15 @@ class="ui purple segment">
       <div class="ui form">
         <div class="field">
           <textarea
-            class="ui input"
-            type="text"
-            ng-model="settings.confirmationText">
+                  class="ui input"
+                  type="text"
+                  ng-model="settings.confirmationText">
           </textarea>
         </div>
         <div class="field">
           <div
-            class="ui green button"
-            ng-click="updateConfirmationText()">
+                  class="ui green button"
+                  ng-click="updateConfirmationText()">
             Update
           </div>
         </div>
@@ -409,8 +463,8 @@ class="ui purple segment">
     </div>
     <div class="column">
       <div
-        class="preview ui segment"
-        ng-bind-html="markdownPreview(settings.confirmationText)">
+              class="preview ui segment"
+              ng-bind-html="markdownPreview(settings.confirmationText)">
       </div>
     </div>
   </div>

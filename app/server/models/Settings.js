@@ -1,5 +1,10 @@
 var mongoose = require('mongoose');
 
+var judgeGroup = {
+  name: String,
+  category: String,
+};
+
 /**
  * Settings Schema!
  *
@@ -24,7 +29,7 @@ var schema = new mongoose.Schema({
   },
   timeConfirm: {
     type: Number,
-    default: Date.now() + (2*31104000000) // Date of confirmation
+    default: Date.now() + (2 * 31104000000) // Date of confirmation
   },
   autoDecide: {
     type: String,
@@ -72,15 +77,78 @@ var schema = new mongoose.Schema({
     type: Number,
     default: 800
   },
-  judges: {
+  timeJudge: {
+    type: Number,
+    default: Date.now()
+  },
+  generalJudges: {
     type: Number,
     select: false,
-    default: 3
+    default: 1
   },
-  judgeCriteria: {
+  sponsorJudges: {
+    type: Number,
+    select: false,
+    default: 1
+  },
+  generalJudgingCategories: {
     type: [String],
     select: false,
-    default: ['Entrepreneurship', 'Entertainment', 'Transportation', 'Technicality', 'Creativity', 'Impact']
+    default: ['Entrepreneurship', 'Entertainment', 'Transportation']
+  },
+  sponsorJudgingCategories: {
+    type: [String],
+    select: false,
+    default: [
+      '[Facebook] Facebook\'s Favorite Product',
+      '[AWS] Best Mobile or Web App - First Place',
+      '[AWS] Best Mobile or Web App - Second Place',
+      '[AWS] Best Mobile or Web App - Third Place',
+      '[iTradeNetwork] The Freshest Hack Challenge',
+      '[OmniSci] OmniSci’s Favorite Hack',
+      '[Tailored Brands] Best use of Tailored Brand’s data',
+      '[Totle] Totle\'s Favorite Hack',
+      '[Polarr] Polarr\'s Favorite Hack',
+      '[Transposit] The Best Use of Transposit',
+      '[Crowdstrike] Crowdstrike\'s Favorite Hack',
+      '[Cloudflare] Best use of Serverless',
+      '[GCP] Best Use of Google Cloud Platform',
+      '[Blockstack] Blockstack\'s Favorite Hack',
+      '[MLH] Best Use of Snap Kit',
+      '[MLH] Best Domain Registered with Domain.com',
+      '[MLH] Best IoT Hack using a Qualcomm Device',
+    ]
+  },
+  judgingCriteria: {
+    type: [String],
+    select: false,
+    default: [
+        'Relevant',
+        'Technical Complexity',
+        '"Wow" Factor',
+        'Functionality',
+        'Passion',
+        'Vertical Criteria #1',
+        'Vertical Criteria #2',
+        'Vertical Criteria #3'
+    ]
+  },
+  judgeGroups: {
+    type: [judgeGroup],
+    select: false,
+    default: [
+      {name: 'Malibu', category: 'Entrepreneurship'},
+      {name: 'Zuma', category: 'Entrepreneurship'},
+      {name: 'Hermosa', category: 'Entrepreneurship'},
+      {name: 'Manhattan', category: 'Entertainment'},
+      {name: 'Paradise Cove', category: 'Entertainment'},
+      {name: 'Santa Monica', category: 'Entertainment'},
+      {name: 'Dockweiler', category: 'Transportation'},
+      {name: 'Venice', category: 'Transportation'},
+      {name: 'Redondo', category: 'Transportation'},
+      {name: 'El Matador', category: 'Flexible'},
+      {name: 'Huntington', category: 'Flexible'},
+    ],
   },
   transportation: [{ // TODO: implement this
     school: String,
@@ -99,25 +167,25 @@ var schema = new mongoose.Schema({
  * Review criteria are by default not included in settings.
  * @param  {Function} callback args(err, reviewCriteria)
  */
-schema.statics.getReview = function(callback){
+schema.statics.getReview = function (callback) {
   this
       .findOne({})
       .select('reviewers reviewCriteria admissions')
-      .exec(function(err, settings){
+      .exec(function (err, settings) {
         return callback(err, settings);
       });
 };
 
 /**
- * Get the list of review criteria
- * Review criteria are by default not included in settings.
+ * Get the list of judging criteria
+ * Judging criteria are by default not included in settings.
  * @param  {Function} callback args(err, reviewCriteria)
  */
-schema.statics.getJudge = function(callback){
+schema.statics.getJudging = function (callback) {
   this
       .findOne({})
-      .select('judges judgeCriteria')
-      .exec(function(err, settings){
+      .select('timeJudge generalJudges sponsorJudges generalJudgingCategories sponsorJudgingCategories judgingCriteria judgeGroups')
+      .exec(function (err, settings) {
         return callback(err, settings);
       });
 };
@@ -128,37 +196,37 @@ schema.statics.getJudge = function(callback){
  * Whitelist emails are by default not included in settings.
  * @param  {Function} callback args(err, emails)
  */
-schema.statics.getWhitelistedEmails = function(callback){
+schema.statics.getWhitelistedEmails = function (callback) {
   this
-    .findOne({})
-    .select('whitelistedEmails')
-    .exec(function(err, settings){
-      return callback(err, settings.whitelistedEmails);
-    });
+      .findOne({})
+      .select('whitelistedEmails')
+      .exec(function (err, settings) {
+        return callback(err, settings.whitelistedEmails);
+      });
 };
 
 /**
  * Get the open and close time for registration.
  * @param  {Function} callback args(err, times : {timeOpen, timeClose, timeConfirm})
  */
-schema.statics.getRegistrationTimes = function(callback){
+schema.statics.getRegistrationTimes = function (callback) {
   this
-    .findOne({})
-    .select('timeOpen timeClose timeConfirm')
-    .exec(function(err, settings){
-      callback(err, {
-        timeOpen: settings.timeOpen,
-        timeClose: settings.timeClose,
-        timeCloseUSC: settings.timeCloseUSC,
-        timeConfirm: settings.timeConfirm
+      .findOne({})
+      .select('timeOpen timeClose timeConfirm')
+      .exec(function (err, settings) {
+        callback(err, {
+          timeOpen: settings.timeOpen,
+          timeClose: settings.timeClose,
+          timeCloseUSC: settings.timeCloseUSC,
+          timeConfirm: settings.timeConfirm
+        });
       });
-    });
 };
 
-schema.statics.getPublicSettings = function(callback){
+schema.statics.getPublicSettings = function (callback) {
   this
-    .findOne({})
-    .exec(callback);
+      .findOne({})
+      .exec(callback);
 };
 
 module.exports = mongoose.model('Settings', schema);

@@ -1,0 +1,256 @@
+<div id="judging" class="page">
+  <div class="divided title">
+    Judging
+  </div>
+
+  <div
+          ng-show="user.admin"
+          ng-class="{'loading': loading}">
+    <!--List Modal-->
+    <div class="ui modal" id="judgesModal">
+      <div class="header">Judges List</div>
+      <div class="content">
+        <div class="ui list">
+          <div class="item">
+            <strong>Judges</strong>
+          </div>
+          <div class="item" ng-repeat="judge in judgesList">
+            {{judge.profile.name ? judge.profile.name : judge.email}} ({{judge.judging.role}}{{judge.judging.role ===
+            'General' ? '-' + judge.judging.group : ''}}) : {{judge.judging.queue.length}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ui modal" id="projectsModal">
+      <div class="header">Projects List</div>
+      <div class="content">
+        <div class="ui list">
+          <div class="item">
+            <strong>Projects</strong>
+          </div>
+          <div class="item" ng-repeat="project in allProjects">
+            {{project.submissionTitle}}: <a href="{{project.submissionUrl}}">Devpost</a>, Table {{project.table}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="six column centered row">
+        <button class="ui icon basic button column" ng-click="showJudgesModal()">
+          <i class="user icon"></i>
+        </button>
+        <button class="ui icon basic button column" ng-click="showProjectsModal()">
+          <i class="list icon"></i>
+        </button>
+        <button class="ui blue inverted button column">
+          <label for="devpost" class="devpostInput"> Upload </label>
+          <!--Angular does not support binding for file inputs so we have to manually call upload-->
+          <input type="file"
+                 style="display:none"
+                 id="devpost"
+                 name="devpost"
+                 onchange="angular.element(this).scope().upload(this)"/>
+        </button>
+        <button class="ui orange inverted button column"
+                ng-click="exportTableAssignments()">
+          Table Assignments
+        </button>
+        <button class="ui orange inverted button column"
+                ng-click="exportJudgingData()">
+          Judging Data
+        </button>
+        <button class="ui purple inverted button column"
+                ng-click="assign()">
+          Assign Projects
+        </button>
+      </div>
+    </div>
+    <div class="ui divider"></div>
+  </div>
+
+
+  <div class="ui stackable page grid">
+    <div class="column">
+      <div class="ui form"
+           ng-class="{'loading': loading}">
+
+        <div class="">
+          <div class="ui two column centered grid">
+            <div class="row">
+              <div class="ui column">
+                <button class="ui basic button column"
+                        ng-click="refresh()">
+                  Refresh
+                </button>
+              </div>
+              <div class="ui column">
+                <button class="ui toggle basic button"
+                        ng-click="toggleAll()">
+                  Show All
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="ui column">
+                <select
+                        id="role"
+                        ng-model="user.judging.role"
+                        ng-change="setRole()">
+                  <option value="">Role</option>
+                  <option value="General">General</option>
+                  <option value="Sponsor">Sponsor</option>
+                </select>
+              </div>
+              <div class="ui column">
+                <div
+                        ng-show="user.judging.role == undefined || user.judging.role == ''">
+                  Please Select a Role!
+                </div>
+                <select
+                        id="group"
+                        ng-model="user.judging.group"
+                        ng-change="setGroup()"
+                        ng-show="user.judging.role == 'General'">
+                  <option value="">Group</option>
+                  <option ng-repeat="group in settings.judgeGroups" value="{{group.name}}">{{group.name}}
+                    ({{group.category}})
+                  </option>
+                </select>
+                <select class="ui dropdown"
+                        id="categories"
+                        multiple=""
+                        ng-show="user.judging.role == 'Sponsor'"
+                        ng-model="user.judging.categories"
+                        ng-click="setCategories()">
+                  <option value="">None</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui divider"></div>
+
+
+        <!--Empty-->
+        <div ng-show="projects.length == 0">
+          <p>
+            There's nothing here! Either you haven't selected your appropriate selections or projects haven't been
+            assigned!
+            Find or message any organizer, and we'll help you right away.
+          </p>
+        </div>
+
+        <div ng-show="projects.length != 0">
+          <!--Show all-->
+          <div
+                  ng-show="showAll">
+            <div class="ui centered cards">
+              <div class="ui card"
+                   ng-class="$index < 5 ? 'red' : ''"
+                   ng-repeat="project in sortedProjects">
+                <div class="content">
+                  <div class="ui right floated mini icon" ng-click="showProject(project._id)">
+                    <i class="external icon"></i>
+                  </div>
+                  <div class="header">
+                    {{project.submissionTitle}}
+                  </div>
+                  <div class="meta">
+                    <div ng-show="user.judging.role === 'Sponsor'">
+                      Table {{project.table}}
+                    </div>
+                    <div ng-show="user.judging.role === 'General'">
+                      Rank: {{$index+1}}
+                    </div>
+                  </div>
+                  <div class="description">
+                    <a href="{{project.submissionUrl}}" target="_blank">Devpost</a>
+                    <br>
+                    Comments: {{getJudgingFromEmail(project, user.email).comments}}
+                  </div>
+                </div>
+                <div class="extra content"
+                     ng-show="user.judging.role === 'Sponsor'">
+                  <select
+                          ng-model="project.award"
+                          ng-change="setAward($index)">
+                    <option value="">Set Award</option>
+                    <option ng-repeat="category in user.judging.categories" value="{{category}}">
+                      ({{category}})
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--Show Next Table-->
+          <div class=""
+               ng-show="!showAll">
+
+            <!--Project Information-->
+            <div class="content"
+                 style="text-align: center">
+              <br>
+              <div class="divided title"> {{currentProject.submissionTitle}}</div>
+              <div ng-show="user.judging.role == 'General'">
+                <p>Time on: {{formatTimeShort(currentProject.time)}}</p>
+              </div>
+              <div ng-show="user.judging.role == 'Sponsor'">
+                <p>Table: {{currentProject.table}}</p>
+              </div>
+              <a href="{{currentProject.submissionUrl}}" target="_blank">Devpost</a>
+            </div>
+
+            <br>
+
+            <!--Judging-->
+            <div class="ui centered">
+              <div
+                      ng-show="user.judging.role === 'General'">
+                <div ng-repeat="criteria in settings.judgingCriteria">
+                  <div class="field">
+                    <label>{{criteria}}</label>
+                    <input type="number" min="{{scoresRange[0]}}" max="{{scoresRange[1]}}" ng-model="scores[$index]">
+                  </div>
+                </div>
+              </div>
+              <div
+                      ng-show="user.judging.role === 'Sponsor'">
+                <div class="field">
+                  <label>Score</label>
+                  <input type="number" min="{{scoresRange[0]}}" max="{{scoresRange[1]}}" ng-model="sponsorScore">
+                </div>
+              </div>
+              <div class="field">
+                <label for="comments">Comments</label>
+                <textarea
+                        id="comments"
+                        ng-model="comments">
+                    </textarea>
+              </div>
+              <div class=""
+                   style="text-align: center">
+                <div>
+                  <button class="ui green inverted button column" ng-class="{'disabled': updating}"
+                          ng-click="updateJudging()">
+                    Submit
+                  </button>
+                  <!--Notification-->
+                  <i class="ui column green check icon" ng-show="toast"></i>
+                </div>
+                <span class="centered subtext">*Score from {{scoresRange[0]}} - {{scoresRange[1]}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+</div>
