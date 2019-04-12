@@ -114,13 +114,13 @@ let stream = fs.createWriteStream('scripts/data/devpost-test.csv');
 stream.once('open', fd => {
   stream.write('Submission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\n');
   var projects = [];
-  for (let i = 1; i <= 100; i++) {
+  for (let i = 1; i <= 1000; i++) {
     let vertical = verticals[i % 3];
     let category = categories[i % 3];
     projects.push([
       'Project' + i,
       'https://hacksc.com',
-      'This is our project!',
+      'Submission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\nSubmission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\nSubmission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\nSubmission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\nSubmission Title,Submission Url,Plain Description,Video,Website,File Url,Vertical,Desired Prizes,Built With,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\n',
       'video',
       'https://apply.hacksc.com',
       '',
@@ -140,6 +140,7 @@ stream.once('open', fd => {
       console.log(err);
     }
     stream.write(data.join(''));
+    console.log('done writing');
     stream.close();
   });
 });

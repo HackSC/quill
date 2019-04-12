@@ -361,11 +361,6 @@ JudgingController.assignJudging = function (callback) {
 
     // Assign Group Judging
     categoryGroups.forEach(function (judgeGroups, category) {
-      // Find projects in each
-      console.log(category + ':');
-      judgeGroups.forEach(group => {
-        console.log(group.name + ':' + group.judges.map(e => e.email).join(','));
-      });
       Project.find({
         vertical: category
       }, function (err, projects) {
@@ -420,7 +415,7 @@ JudgingController.assignJudging = function (callback) {
               'judging.queue': group.queue,
             }
           }, function(err, res){
-            console.log(res);
+            // do nothing
           });
         })
       });
@@ -434,8 +429,26 @@ JudgingController.assignJudging = function (callback) {
           $in: judge.judging.categories
         }
       }, function (err, projects) {
+        // todo: Only update if need more judges in settings.sponsorJudges
+
+        // Update Judge
+        User.findOneAndUpdate({
+          _id: judge._id
+        }, {
+          $set: {
+            'judging.queue': projects.map(e => ({id: e._id, judged: false})),
+            'judging.count': projects.length
+          }
+        }, {
+          new: true,
+        }, function (err) {
+          if (err) {
+            return callback(err);
+          }
+        });
+
+        // Update projects
         projects.forEach(function (project) {
-          // todo: Only update if need more judges in settings.sponsorJudges
           // Update Project
           Project.findOneAndUpdate({
             _id: project._id
@@ -446,27 +459,6 @@ JudgingController.assignJudging = function (callback) {
                 scores: [],
                 comments: ''
               }
-            }
-          }, {
-            new: true,
-          }, function (err) {
-            if (err) {
-              return callback(err);
-            }
-          });
-
-          // Update Judge
-          User.findOneAndUpdate({
-            _id: judge._id
-          }, {
-            $push: {
-              'judging.queue': {
-                id: project._id,
-                judged: false
-              },
-            },
-            $inc: {
-              'judging.count': 1,
             }
           }, {
             new: true,
