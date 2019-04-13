@@ -97,13 +97,15 @@
                 <select
                         id="role"
                         ng-model="user.judging.role"
-                        ng-change="setRole()">
+                        ng-change="setRole()"
+                        ng-disabled="disableEditing">
                   <option value="">Role</option>
                   <option value="General">General</option>
                   <option value="Sponsor">Sponsor</option>
                 </select>
               </div>
-              <div class="ui column">
+              <div class="ui column"
+                   ng-if="!disableEditing">
                 <div
                         ng-show="user.judging.role == undefined || user.judging.role == ''">
                   Please Select a Role!
@@ -112,7 +114,8 @@
                         id="group"
                         ng-model="user.judging.group"
                         ng-change="setGroup()"
-                        ng-show="user.judging.role == 'General'">
+                        ng-show="user.judging.role == 'General'"
+                        ng-disabled="disableEditing">
                   <option value="">Group</option>
                   <option ng-repeat="group in settings.judgeGroups" value="{{group.name}}">{{group.name}}
                     ({{group.category}})
@@ -123,9 +126,23 @@
                         multiple=""
                         ng-show="user.judging.role == 'Sponsor'"
                         ng-model="user.judging.categories"
-                        ng-click="setCategories()">
+                        ng-click="setCategories()"
+                        ng-disabled="disableEditing">
                   <option value="">None</option>
                 </select>
+              </div>
+              <div class="ui column"
+                   ng-if="disableEditing">
+                <div ng-show="user.judging.role == 'General'">
+                  Group: {{user.judging.group}}
+                </div>
+                <div ng-show="user.judging.role == 'Sponsor'">
+                  Categories:
+                  <br>
+                  <span ng-repeat="category in user.judging.categories">
+                    {{category}}<br>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -179,7 +196,7 @@
                           ng-change="setAward($index)">
                     <option value="">Set Award</option>
                     <option ng-repeat="category in user.judging.categories" value="{{category}}">
-                      ({{category}})
+                      {{category}}
                     </option>
                   </select>
                 </div>
@@ -227,10 +244,10 @@
               </div>
               <div class="field">
                 <label for="comments">Comments</label>
-                <textarea
+                <input
+                        type="text"
                         id="comments"
                         ng-model="comments">
-                    </textarea>
               </div>
               <div class=""
                    style="text-align: center">
@@ -239,10 +256,22 @@
                           ng-click="updateJudging()">
                     Submit
                   </button>
+                  <button class="ui blue inverted button column" ng-class="{'disabled': updating}" ng-show="user.judging.role == 'Sponsor'"
+                          ng-click="skipProject()">
+                    Skip
+                  </button>
                   <!--Notification-->
                   <i class="ui column green check icon" ng-show="toast"></i>
                 </div>
-                <span class="centered subtext">*Score from {{scoresRange[0]}} - {{scoresRange[1]}}</span>
+                <br>
+                <span class="centered subtext">
+                  *Score from {{scoresRange[0]}} - {{scoresRange[1]}}
+                </span>
+                <span class="centered subtext" ng-show="user.judging.role == 'Sponsor'">
+                  <br>
+                  *If a team is not at their table, you can press the skip button to go to the next one.
+                  The skipped projects will be queued up after the next time you press submit or refresh.
+                </span>
               </div>
             </div>
           </div>

@@ -8,7 +8,7 @@ var User = require('../app/server/models/User');
 
 var fs = require('fs');
 
-// Pull user info into a csv
+//Pull user info into a csv
 User.find({
   verified: true,
   admin: false,
@@ -46,9 +46,7 @@ User.find({
 User.find({
   verified: true,
   admin: false,
-  'status.submitted': true,
-  'status.confirmed': true,
-  'status.declined': false,
+  'status.checkedIn': true,
 }, function(err, users){
   if(err){
     console.log(err);
@@ -60,11 +58,17 @@ User.find({
     return '';
   };
   console.log(users.length);
-  var stream = fs.createWriteStream('scripts/data/RegistrationData.csv');
+  var stream = fs.createWriteStream('scripts/data/CheckedInData.csv');
   stream.once('open', fd => {
     stream.write('First Name,Last Name,Email,Phone Number,School\n');
     users.forEach(user => {
-      let info = [user.profile.firstName, user.profile.lastName, user.email, user.confirmation.phoneNumber.replace(/\D/g, ''), user.profile.school];
+      let phoneNumber = user.confirmation.phoneNumber;
+      if(phoneNumber !== undefined){
+        phoneNumber = phoneNumber.replace(/\D/g, '');
+      }else{
+        phoneNumber = ''
+      }
+      let info = [user.profile.firstName, user.profile.lastName, user.email, phoneNumber, user.profile.school];
       info = info.map(val => aq(val));
       stream.write(info.join(',') + '\n');
     });
