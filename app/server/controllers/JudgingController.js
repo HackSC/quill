@@ -159,7 +159,10 @@ JudgingController.uploadSubmissionsData = function (data, callback) {
   });
 
   Promise.all([delProjects, delJudging]).then(function () {
-    parseCSV(data, function (output) {
+    parseCSV(data, function (err, output) {
+      if(err){
+        console.log(err);
+      }
       // remove first item
       output.shift();
       // Add into projects
@@ -220,7 +223,8 @@ JudgingController.uploadSubmissionsData = function (data, callback) {
     var output = [];
     // Create the parser
     var parser = parse({
-      delimiter: ","
+      delimiter: ",",
+      relax_column_count: true,
     });
     // Use the readable stream api
     parser.on('readable', function () {
@@ -236,7 +240,7 @@ JudgingController.uploadSubmissionsData = function (data, callback) {
     // When we are done, test that the parsed output matched what expected
     parser.on('end', function () {
       // can use output
-      callback(output);
+      callback(null, output);
     });
     // Write to the parser
     parser.write(data.trim());
@@ -548,21 +552,39 @@ JudgingController.updateJudging = function (projectId, judgeId, scores, comments
       return callback(err);
     }
 
-    // Update the Project
-    Project.findOneAndUpdate({
-      _id: projectId,
-      'judging.judges.email': judgeUser.email,
-    }, {
-      $set: {
-        'judging.judges.$.scores': scores,
-        'judging.judges.$.comments': comments
-      },
-      $inc: {
-        'judging.overallScore': scoreSum
-      }
-    }, {
-      new: true
-    }, callback);
+    if(judgeUser.judging.role === 'General'){
+      // Update the Project
+      Project.findOneAndUpdate({
+        _id: projectId,
+        'judging.judges.email': judgeUser.email,
+      }, {
+        $set: {
+          'judging.judges.$.scores': scores,
+          'judging.judges.$.comments': comments
+        },
+        $inc: {
+          'judging.overallScore': scoreSum,
+        }
+      }, {
+        new: true
+      }, callback);
+    }else if(judgeUser.judging.role === 'Sponsor'){
+      // Update the Project
+      Project.findOneAndUpdate({
+        _id: projectId,
+        'judging.judges.email': judgeUser.email,
+      }, {
+        $set: {
+          'judging.judges.$.scores': scores,
+          'judging.judges.$.comments': comments
+        }
+      }, {
+        new: true
+      }, callback);
+    }else{
+      callback();
+    }
+
 
   });
 };

@@ -21,6 +21,7 @@ angular.module('reg')
         $scope.judgesList = [];
         $scope.allProjects = [];
         $scope.settings = settings.data;
+        $scope.disableEditing = true;
 
         // User and Projects
         $scope.user = currentUser.data;
@@ -58,15 +59,40 @@ angular.module('reg')
         };
 
         $scope.toggleAll = function () {
-          if(!$scope.showAll){
-            getJudgeProjects(function(){
-              $scope.sortedProjects = $scope.projects.sort(function (p1, p2) {
-                return p2.judging.overallScore - p1.judging.overallScore;
-              });
+          if (!$scope.showAll) {
+            getJudgeProjects(function () {
+              if ($scope.user.judging.role === 'General') {
+                $scope.sortedProjects = $scope.projects.sort(function (p1, p2) {
+                  return p2.judging.overallScore - p1.judging.overallScore;
+                });
+              } else if ($scope.user.judging.role === 'Sponsor') {
+                // sort by individual score
+                $scope.sortedProjects = $scope.projects.sort(function (p1, p2) {
+                  // get judge score
+                  let p1Judge = p1.judging.judges.find(function (judge) {
+                    return judge.email === $scope.user.email;
+                  });
+                  let p2Judge = p2.judging.judges.find(function (judge) {
+                    return judge.email === $scope.user.email;
+                  });
+                  if (p1Judge !== undefined && p2Judge !== undefined) {
+                    let p1Score = p1Judge.scores.reduce(function (sum, val) {
+                      return sum + val
+                    }, 0);
+                    let p2Score = p2Judge.scores.reduce(function (sum, val) {
+                      return sum + val
+                    }, 0);
+                    return p2Score - p1Score;
+                  } else {
+                    // uh
+                    return p2.judging.overallScore - p1.judging.overallScore;
+                  }
+                });
+              }
               $scope.showAll = !$scope.showAll;
               nextProject();
             });
-          }else{
+          } else {
             $scope.showAll = !$scope.showAll;
             nextProject();
           }
@@ -77,7 +103,7 @@ angular.module('reg')
           clearCurrentJudging();
           getProjectsList();
           getJudgesList();
-          getJudgeProjects(function(){
+          getJudgeProjects(function () {
             nextProject();
           });
         };
@@ -94,7 +120,7 @@ angular.module('reg')
             // Check if out of bounds
             if (projectIndex >= $scope.user.judging.queue.length) {
               // you've finished, show all
-              if(!$scope.showAll){
+              if (!$scope.showAll) {
                 $scope.toggleAll();
               }
               projectIndex = 0;
@@ -202,7 +228,7 @@ angular.module('reg')
 
         $scope.formatTimeShort = Utils.formatTimeShort;
 
-        $scope.getJudgingFromEmail = function(project, email){
+        $scope.getJudgingFromEmail = function (project, email) {
           return project.judging.judges.find(e => {
             return e.email === email;
           });
@@ -336,8 +362,8 @@ angular.module('reg')
 
         $scope.updateJudging = function () {
           // check sponsor
-          if($scope.user.judging.role === 'Sponsor'){
-            if($scope.sponsorScore === undefined || $scope.sponsorScore < $scope.scoresRange[0] || $scope.sponsorScore > $scope.scoresRange[1]) {
+          if ($scope.user.judging.role === 'Sponsor') {
+            if ($scope.sponsorScore === undefined || $scope.sponsorScore < $scope.scoresRange[0] || $scope.sponsorScore > $scope.scoresRange[1]) {
               swal('Oops', 'Scores must be between ' + $scope.scoresRange[0] + ' and ' + $scope.scoresRange[1], 'error');
               return;
             }
@@ -354,13 +380,12 @@ angular.module('reg')
                   $timeout(function () {
                     $scope.toast = false;
                   }, 3000);
-                  swal.close();
                   $scope.updating = false;
                 }, err => {
                   swal('Oops!', 'Something went wrong', 'error');
                   $scope.updating = false;
                 });
-          }else{
+          } else {
             // check general
             // check in range
             for (var i = 0; i < $scope.scores.length; i++) {
@@ -382,7 +407,6 @@ angular.module('reg')
                   $timeout(function () {
                     $scope.toast = false;
                   }, 3000);
-                  swal.close();
                   $scope.updating = false;
                 }, err => {
                   swal('Oops!', 'Something went wrong', 'error');

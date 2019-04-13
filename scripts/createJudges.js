@@ -98,16 +98,13 @@ var create = function (settings) {
   }
 };
 
-//create();
-
-
 // create csv
 var generateData = function (settings) {
   var verticals = settings.generalJudgingCategories;
   var categories = settings.sponsorJudgingCategories;
   let stream = fs.createWriteStream('scripts/data/devpost-test.csv');
   stream.once('open', fd => {
-    stream.write('Submission Title,Submission Url,Plain Description,Video,Website,File Url,Desired Prizes,Built With,Select Vertical Prize Category,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count\n');
+    stream.write('Submission Title,Submission Url,Plain Description,Video,Website,File Url,Desired Prizes,Built With,Select Vertical Prize Category,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count,...\n');
     var projects = [];
     for (let i = 1; i <= 300; i++) {
       let vertical = verticals[i % verticals.length];
