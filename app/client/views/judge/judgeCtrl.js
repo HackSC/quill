@@ -415,6 +415,35 @@ angular.module('reg')
           }
         };
 
+        $scope.skipProject = function () {
+          clearCurrentJudging();
+          // Find the next non-judged project
+          projectIndex++;
+          // Check if out of bounds
+          if (projectIndex >= $scope.user.judging.queue.length) {
+            // you've finished, show all
+            if (!$scope.showAll) {
+              $scope.toggleAll();
+            }
+            projectIndex = 0;
+            return;
+          }
+
+          if ($scope.projects.length > 0) {
+            $scope.loading = true;
+            JudgeService.getProject($scope.user.judging.queue[projectIndex].id)
+                .then(response => {
+                  // Set project to show
+                  var project = response.data;
+                  $scope.currentProject = project;
+                  $scope.loading = false;
+                }, err => {
+                  $scope.loading = false;
+                  swal('Uh oh!', 'Something went wrong.', 'error');
+                });
+          }
+        };
+
         $scope.setRole = function () {
           JudgeService.setRole($scope.user.judging.role);
         };

@@ -160,7 +160,7 @@ JudgingController.uploadSubmissionsData = function (data, callback) {
 
   Promise.all([delProjects, delJudging]).then(function () {
     parseCSV(data, function (err, output) {
-      if(err){
+      if (err) {
         console.log(err);
       }
       // remove first item
@@ -192,7 +192,7 @@ JudgingController.uploadSubmissionsData = function (data, callback) {
           group: '',
         };
         p.awards = [];
-        p.table = i+1;
+        p.table = i + 1;
         p.time = 0;
 
         // add teammates
@@ -277,12 +277,24 @@ JudgingController.exportTableAssignments = function (callback) {
     stringifier.on('error', function (err) {
       callback(err);
     });
+    stringifier.write([
+      'Project Name',
+      'Submission Email',
+      'Vertical',
+      'Group',
+      'Call Time',
+      'Table Number']);
     stringifier.on('finish', function () {
       callback(null, data);
     });
-    stringifier.write(['Project Name', 'Submission Email', 'Table Number', 'Call Time', 'Vertical', 'Location']);
     projects.forEach(function (project) {
-      stringifier.write([project.submissionTitle, project.submitter.email, project.table, formatTime(project.time), project.vertical, project.judging.group])
+      stringifier.write([
+        project.submissionTitle,
+        project.submitter.email,
+        project.vertical,
+        project.judging.group,
+        formatTime(project.time),
+        project.table]);
     });
     stringifier.end()
   };
@@ -318,9 +330,27 @@ JudgingController.exportJudgingData = function (callback) {
     stringifier.on('finish', function () {
       callback(null, data);
     });
-    stringifier.write(['Project Name', 'Devpost Link', 'Table', 'Judges', 'Overall Score', 'Awards']);
+    stringifier.write([
+      'Project Name',
+      'Devpost Link',
+      'Submitter',
+      'Vertical',
+      'Group',
+      'Time',
+      'Table',
+      'Prize Categories',
+      'Awards']);
     projects.forEach(function (project) {
-      stringifier.write([project.submissionTitle, project.submissionUrl, project.table, project.judging.judges.map(v => v.email).join(','), project.judging.overallScore, project.awards.join(',')])
+      stringifier.write([
+        project.submissionTitle,
+        project.submissionUrl,
+        project.submitter.email,
+        project.vertical,
+        project.group,
+        project.time,
+        project.table,
+        project.desiredPrizes.join(','),
+        project.awards.join(',')]);
     });
     stringifier.end()
   };
@@ -418,7 +448,7 @@ JudgingController.assignJudging = function (callback) {
             $set: {
               'judging.queue': group.queue,
             }
-          }, function(err, res){
+          }, function (err, res) {
             // do nothing
           });
         })
@@ -548,11 +578,11 @@ JudgingController.updateJudging = function (projectId, judgeId, scores, comments
       return callback(err);
     }
 
-    if(!judgeUser){
+    if (!judgeUser) {
       return callback(err);
     }
 
-    if(judgeUser.judging.role === 'General'){
+    if (judgeUser.judging.role === 'General') {
       // Update the Project
       Project.findOneAndUpdate({
         _id: projectId,
@@ -568,7 +598,7 @@ JudgingController.updateJudging = function (projectId, judgeId, scores, comments
       }, {
         new: true
       }, callback);
-    }else if(judgeUser.judging.role === 'Sponsor'){
+    } else if (judgeUser.judging.role === 'Sponsor') {
       // Update the Project
       Project.findOneAndUpdate({
         _id: projectId,
@@ -581,7 +611,7 @@ JudgingController.updateJudging = function (projectId, judgeId, scores, comments
       }, {
         new: true
       }, callback);
-    }else{
+    } else {
       callback();
     }
 

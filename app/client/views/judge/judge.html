@@ -256,10 +256,22 @@
                           ng-click="updateJudging()">
                     Submit
                   </button>
+                  <button class="ui blue inverted button column" ng-class="{'disabled': updating}" ng-show="user.judging.role == 'Sponsor'"
+                          ng-click="skipProject()">
+                    Skip
+                  </button>
                   <!--Notification-->
                   <i class="ui column green check icon" ng-show="toast"></i>
                 </div>
-                <span class="centered subtext">*Score from {{scoresRange[0]}} - {{scoresRange[1]}}</span>
+                <br>
+                <span class="centered subtext">
+                  *Score from {{scoresRange[0]}} - {{scoresRange[1]}}
+                </span>
+                <span class="centered subtext" ng-show="user.judging.role == 'Sponsor'">
+                  <br>
+                  *If a team is not at their table, you can press the skip button to go to the next one.
+                  The skipped projects will be queued up after the next time you press submit or refresh.
+                </span>
               </div>
             </div>
           </div>
