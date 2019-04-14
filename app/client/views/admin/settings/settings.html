@@ -223,6 +223,16 @@
                 ng-model="judgeGroups">
             </textarea>
       </div>
+      <div class="field">
+        <div class="ui toggle checkbox">
+          <input
+                  type="checkbox"
+                  name="judgeDisableEditing"
+                  ng-class="judgeDisableEditing ? 'checked: true': 'checked: false'"
+                  ng-model="judgeDisableEditing">
+          <label>Disable Role and Group Editing</label>
+        </div>
+      </div>
 
       <div class="ui field">
         <div
@@ -249,51 +259,51 @@
     <div class="ui form">
       <div class="grouped fields">
         <!--<div class="field">-->
-          <!--<div class="ui toggle checkbox">-->
-              <!--<input-->
-              <!--type="checkbox"-->
-              <!--name="allowMinors"-->
-              <!--ng-class="{true: 'checked', false: ''}[settings.allowMinors]"-->
-              <!--ng-model="settings.allowMinors"-->
-              <!--ng-change="updateAllowMinors()">-->
-              <!--<label>Allow minors</label>-->
-          <!--</div>-->
-          <div class="field">
-            <label> Auto Decide </label>
-            <select
-                    ng-model="settings.autoDecide">
-              <option value="">None</option>
-              <option value="Admit">Admit</option>
-              <option value="Waitlist">Waitlist</option>
-              <option value="Reject">Reject</option>
-            </select>
-          </div>
-          <div class="ui field">
-            <div
-                    class="ui green button"
-                    ng-click="updateAutoDecide()">
-              Update
-            </div>
-          </div>
-          <div class="field">
-              <label>Number of Admissions</label>
-              <div class="ui input">
-                  <input
-                          type="number"
-                          ng-model="settings.admissions">
-              </div>
-          </div>
+        <!--<div class="ui toggle checkbox">-->
+        <!--<input-->
+        <!--type="checkbox"-->
+        <!--name="allowMinors"-->
+        <!--ng-class="{true: 'checked', false: ''}[settings.allowMinors]"-->
+        <!--ng-model="settings.allowMinors"-->
+        <!--ng-change="updateAllowMinors()">-->
+        <!--<label>Allow minors</label>-->
+        <!--</div>-->
+        <div class="field">
+          <label> Auto Decide </label>
+          <select
+                  ng-model="settings.autoDecide">
+            <option value="">None</option>
+            <option value="Admit">Admit</option>
+            <option value="Waitlist">Waitlist</option>
+            <option value="Reject">Reject</option>
+          </select>
         </div>
         <div class="ui field">
           <div
                   class="ui green button"
-                  ng-click="updateAdmissions()">
+                  ng-click="updateAutoDecide()">
             Update
           </div>
+        </div>
+        <div class="field">
+          <label>Number of Admissions</label>
+          <div class="ui input">
+            <input
+                    type="number"
+                    ng-model="settings.admissions">
+          </div>
+        </div>
+      </div>
+      <div class="ui field">
+        <div
+                class="ui green button"
+                ng-click="updateAdmissions()">
+          Update
         </div>
       </div>
     </div>
   </div>
+</div>
 </div>
 
 <!-- Whitelist -->

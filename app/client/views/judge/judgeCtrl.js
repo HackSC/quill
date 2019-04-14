@@ -21,7 +21,6 @@ angular.module('reg')
         $scope.judgesList = [];
         $scope.allProjects = [];
         $scope.settings = settings.data;
-        $scope.disableEditing = true;
 
         // User and Projects
         $scope.user = currentUser.data;
@@ -90,11 +89,11 @@ angular.module('reg')
                 });
               }
               $scope.showAll = !$scope.showAll;
-              nextProject();
+              loadNextProject();
             });
           } else {
             $scope.showAll = !$scope.showAll;
-            nextProject();
+            loadNextProject();
           }
         };
 
@@ -104,7 +103,7 @@ angular.module('reg')
           getProjectsList();
           getJudgesList();
           getJudgeProjects(function () {
-            nextProject();
+            loadNextProject();
           });
         };
 
@@ -112,7 +111,7 @@ angular.module('reg')
 
         // Helper Functions
 
-        function nextProject() {
+        function loadNextProject() {
           projectIndex = 0;
           // Find the next non-judged project
           while ($scope.user.judging !== undefined && $scope.user.judging.queue.length > 0 && $scope.user.judging.queue[projectIndex].judged) {
@@ -134,6 +133,8 @@ angular.module('reg')
                 .then(response => {
                   // Set project to show
                   var project = response.data;
+                  // get categories
+                  project.categories = project.desiredPrizes.filter(v => ($scope.user.judging.categories.indexOf(v) !== -1));
                   $scope.currentProject = project;
                   $scope.loading = false;
                 }, err => {
@@ -337,6 +338,10 @@ angular.module('reg')
                 JudgeService.getProjects($scope.user.judging.queue.map(e => e.id))
                     .then(response => {
                       var projects = response.data;
+                      projects.forEach(function(project){
+                        project.categories = project.desiredPrizes.filter(v => ($scope.user.judging.categories.indexOf(v) !== -1));
+                      });
+
                       $scope.projects = projects;
 
                       // set metadata
@@ -375,7 +380,7 @@ angular.module('reg')
                   // clear for next user
                   clearCurrentJudging();
                   // get next project
-                  nextProject();
+                  loadNextProject();
                   $scope.toast = true;
                   $timeout(function () {
                     $scope.toast = false;
@@ -402,7 +407,7 @@ angular.module('reg')
                   // clear for next user
                   clearCurrentJudging();
                   // get next project
-                  nextProject();
+                  loadNextProject();
                   $scope.toast = true;
                   $timeout(function () {
                     $scope.toast = false;
@@ -415,7 +420,7 @@ angular.module('reg')
           }
         };
 
-        $scope.skipProject = function () {
+        $scope.nextProject = function () {
           clearCurrentJudging();
           // Find the next non-judged project
           projectIndex++;
@@ -440,6 +445,54 @@ angular.module('reg')
                 }, err => {
                   $scope.loading = false;
                   swal('Uh oh!', 'Something went wrong.', 'error');
+                });
+          }
+        };
+
+        $scope.skipProject = function () {
+          // submit all 0's
+          // check sponsor
+          if ($scope.user.judging.role === 'Sponsor') {
+            $scope.updating = true;
+            $scope.sponsorScore = 0;
+            JudgeService.updateJudging($scope.currentProject._id, [$scope.sponsorScore], $scope.comments)
+                .then(response => {
+                  // set local
+                  $scope.user.judging.queue[projectIndex].judged = true;
+                  // clear for next user
+                  clearCurrentJudging();
+                  // get next project
+                  loadNextProject();
+                  $scope.toast = true;
+                  $timeout(function () {
+                    $scope.toast = false;
+                  }, 3000);
+                  $scope.updating = false;
+                }, err => {
+                  swal('Oops!', 'Something went wrong', 'error');
+                  $scope.updating = false;
+                });
+          } else {
+            // check general
+            $scope.updating = true;
+            $scope.scores = new Array($scope.settings.judgingCriteria.length);
+            $scope.scores.fill(0);
+            JudgeService.updateJudging($scope.currentProject._id, $scope.scores, $scope.comments)
+                .then(response => {
+                  // set local
+                  $scope.user.judging.queue[projectIndex].judged = true;
+                  // clear for next user
+                  clearCurrentJudging();
+                  // get next project
+                  loadNextProject();
+                  $scope.toast = true;
+                  $timeout(function () {
+                    $scope.toast = false;
+                  }, 3000);
+                  $scope.updating = false;
+                }, err => {
+                  swal('Oops!', 'Something went wrong', 'error');
+                  $scope.updating = false;
                 });
           }
         };

@@ -10,7 +10,7 @@ var stringify = require('csv-stringify');
 var fs = require('fs');
 
 Settings.getJudging(function(err, settings){
-  create(settings);
+  //create(settings);
   generateData(settings);
 });
 
@@ -108,7 +108,8 @@ var generateData = function (settings) {
     var projects = [];
     for (let i = 1; i <= 300; i++) {
       let vertical = verticals[i % verticals.length];
-      let category = categories[i % categories.length];
+      let category = [categories[i % categories.length], categories[(categories.length - i) % categories.length]];
+      let vr = i%5 > 0 ? 'No' : 'Yes';
       projects.push([
         'Project' + i,
         'https://hacksc.com',
@@ -116,9 +117,13 @@ var generateData = function (settings) {
         'video',
         'https://apply.hacksc.com',
         '',
-        category,
+        category.join(','),
         'Node.js',
         vertical,
+        vr,
+        '',
+        '',
+        '',
         'submitter' + i,
         'Submitter' + i,
         'Last Name',

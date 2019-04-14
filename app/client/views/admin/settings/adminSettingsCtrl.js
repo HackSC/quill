@@ -104,6 +104,7 @@ angular.module('reg')
               $scope.sponsorJudgingCategories = response.data.sponsorJudgingCategories.join(", ");
               $scope.judgingCriteria = response.data.judgingCriteria.join(", ");
               $scope.judgeGroups = response.data.judgeGroups.map(group => group.name + '-' + group.category).join(', ');
+              $scope.judgeDisableEditing = response.data.judgeDisableEditing;
             });
 
         $scope.updateJudging = function () {
@@ -114,7 +115,8 @@ angular.module('reg')
                   $scope.generalJudgingCategories.split(',').map(s => s.trim()),
                   $scope.sponsorJudgingCategories.split(',').map(s => s.trim()),
                   $scope.judgingCriteria.split(',').map(s => s.trim()),
-                  $scope.judgeGroups.split(',').map(s => ({name: s.trim().split('-')[0], category: s.trim().split('-')[1]})))
+                  $scope.judgeGroups.split(',').map(s => ({name: s.trim().split('-')[0], category: s.trim().split('-')[1]})),
+                  $scope.judgeDisableEditing)
               .then(response => {
                 $scope.generalJudges = response.data.generalJudges;
                 $scope.sponsorJudges = response.data.sponsorJudges;
@@ -122,10 +124,10 @@ angular.module('reg')
                 $scope.sponsorJudgingCategories = response.data.sponsorJudgingCategories.join(", ");
                 $scope.judgingCriteria = response.data.judgingCriteria.join(", ");
                 $scope.judgeGroups = response.data.judgeGroups.map(group => group.name + '-' + group.category).join(", ");
+                $scope.judgeDisableEditing = response.data.judgeDisableEditing;
                 swal('Looks Good!', 'Judging Settings Updated', 'success');
               });
         };
-
 
         // Whitelist --------------------------------------
 

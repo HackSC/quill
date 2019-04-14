@@ -163,11 +163,13 @@ JudgingController.uploadSubmissionsData = function (data, callback) {
       if (err) {
         console.log(err);
       }
-      // remove first item
+      // remove first item the header
       output.shift();
       // Add into projects
-      for (let i = 0; i < output.length; i++) {
-        let val = output[i];
+      let tableCounter = 0;
+      let vrTableCounter = 0;
+      while(tableCounter + vrTableCounter < output.length){
+        let val = output[tableCounter+vrTableCounter];
         let p = new Project();
         p.submissionTitle = val[0];
         p.submissionUrl = val[1];
@@ -178,13 +180,15 @@ JudgingController.uploadSubmissionsData = function (data, callback) {
         p.desiredPrizes = val[6].split(',').map(v => v.trim());
         p.builtWith = val[7].split(',').map(v => v.trim());
         p.vertical = val[8];
+        p.vr = val[9] === 'Yes';
+        // 10-12 is MLH
         p.submitter = {
-          screenName: val[9],
-          firstName: val[10],
-          lastName: val[11],
-          email: val[12],
+          screenName: val[13],
+          firstName: val[14],
+          lastName: val[15],
+          email: val[16],
         };
-        p.schools = val[13].split(',').map(v => v.trim());
+        p.schools = val[17].split(',').map(v => v.trim());
         p.teammates = [];
         p.judging = {
           judges: [],
@@ -192,18 +196,25 @@ JudgingController.uploadSubmissionsData = function (data, callback) {
           group: '',
         };
         p.awards = [];
-        p.table = i + 1;
         p.time = 0;
 
+        if(!p.vr){
+          p.table = tableCounter + 1;
+          tableCounter++;
+        }else{
+          p.table = 'V' + (vrTableCounter + 1);
+          vrTableCounter++;
+        }
+
         // add teammates
-        let numTeammates = val[14];
+        let numTeammates = val[18];
         for (let j = 0; j < numTeammates; j++) {
           let index = 4 * j;
           p.teammates.push({
-            screenName: val[14 + index + 1],
-            firstName: val[14 + index + 2],
-            lastName: val[14 + index + 3],
-            email: val[14 + index + 4],
+            screenName: val[18 + index + 1],
+            firstName: val[18 + index + 2],
+            lastName: val[18 + index + 3],
+            email: val[18 + index + 4],
           });
         }
 
@@ -346,7 +357,7 @@ JudgingController.exportJudgingData = function (callback) {
         project.submissionUrl,
         project.submitter.email,
         project.vertical,
-        project.group,
+        project.judging.group,
         formatTime(project.time),
         project.table,
         project.desiredPrizes.join(','),
@@ -362,7 +373,7 @@ JudgingController.exportJudgingData = function (callback) {
  */
 JudgingController.assignJudging = function (callback) {
   // Interval in ms
-  var presentationTime = 5 * (60 * 1000);
+  var presentationTime = 7 * (60 * 1000);
 
   var assign = function (settings, judges, projects, callback) {
     // Get judge groups by user picked groups and individual groups
@@ -398,6 +409,10 @@ JudgingController.assignJudging = function (callback) {
       Project.find({
         vertical: category
       }, function (err, projects) {
+        // sort projects by vr
+        projects.sort(function(p1, p2){
+          return p1.vr - p2.vr;
+        });
         if (err) {
           return callback(err);
         }

@@ -150,6 +150,11 @@ var schema = new mongoose.Schema({
       {name: 'Huntington', category: 'Flexible'},
     ],
   },
+  judgeDisableEditing: {
+    type: Boolean,
+    select: false,
+    default: false
+  },
   transportation: [{ // TODO: implement this
     school: String,
     coordinators: [{
@@ -184,7 +189,7 @@ schema.statics.getReview = function (callback) {
 schema.statics.getJudging = function (callback) {
   this
       .findOne({})
-      .select('timeJudge generalJudges sponsorJudges generalJudgingCategories sponsorJudgingCategories judgingCriteria judgeGroups')
+      .select('timeJudge generalJudges sponsorJudges generalJudgingCategories sponsorJudgingCategories judgingCriteria judgeGroups judgeDisableEditing')
       .exec(function (err, settings) {
         return callback(err, settings);
       });
