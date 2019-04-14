@@ -21,7 +21,6 @@ angular.module('reg')
         $scope.judgesList = [];
         $scope.allProjects = [];
         $scope.settings = settings.data;
-        $scope.disableEditing = true;
 
         // User and Projects
         $scope.user = currentUser.data;

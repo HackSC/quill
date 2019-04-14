@@ -602,7 +602,8 @@ module.exports = function(router) {
     var sponsorJudgingCategories = req.body.sponsorJudgingCategories;
     var judgingCriteria = req.body.judgingCriteria;
     var judgeGroups = req.body.judgeGroups;
-    SettingsController.updateJudging(generalJudges, sponsorJudges, generalJudgingCategories, sponsorJudgingCategories, judgingCriteria, judgeGroups, defaultResponse(req, res));
+    var judgeDisableEditing = req.body.judgeDisableEditing;
+    SettingsController.updateJudging(generalJudges, sponsorJudges, generalJudgingCategories, sponsorJudgingCategories, judgingCriteria, judgeGroups, judgeDisableEditing, defaultResponse(req, res));
   });
 
   /**
