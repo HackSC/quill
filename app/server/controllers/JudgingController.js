@@ -199,7 +199,17 @@ JudgingController.uploadSubmissionsData = function (data, callback) {
         p.time = 0;
 
         if(!p.vr){
-          p.table = tableCounter + 1;
+          let tableNum = tableCounter + 1 + 54;
+          if(tableNum === 78){
+            tableNum = 144;
+          }else if(tableNum === 86){
+            tableNum = 145
+          }else if(tableNum === 99){
+            tableNum = 146
+          }else if(tableNum === 102){
+            tableNum = 147
+          }
+          p.table = tableNum; // offset emergency
           tableCounter++;
         }else{
           p.table = 'V' + (vrTableCounter + 1);
