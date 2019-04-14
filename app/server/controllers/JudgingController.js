@@ -346,7 +346,7 @@ JudgingController.exportJudgingData = function (callback) {
         project.submissionUrl,
         project.submitter.email,
         project.vertical,
-        project.group,
+        project.judging.group,
         formatTime(project.time),
         project.table,
         project.desiredPrizes.join(','),
