@@ -19,7 +19,7 @@ var formatTime = function (time) {
   }
   let date = new Date(time);
   // Hack for timezone
-  return moment(date).format('h:mm a');
+  return moment(date).utcOffset("-08:00").format('h:mm a');
 };
 
 /**
@@ -420,6 +420,7 @@ JudgingController.assignJudging = function (callback) {
         let groupIndex = 0;
         var callTime = settings.timeJudge;
         for (let i = 0; i < projects.length; i++) {
+          console.log(callTime);
           // combine them in to appropriate judges format
 
           // Update Project
