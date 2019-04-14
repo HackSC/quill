@@ -59,11 +59,13 @@ var schema = new mongoose.Schema({
 
   fileUrl : String,
 
-  vertical: String,
-
   desiredPrizes : [String],
 
   builtWith : [String],
+
+  vertical: String,
+
+  vr: Boolean,
 
   submitter : profile,
 
@@ -76,7 +78,7 @@ var schema = new mongoose.Schema({
 
   awards: [String],
 
-  table: Number,
+  table: String,
 
   time: Number,
 });
