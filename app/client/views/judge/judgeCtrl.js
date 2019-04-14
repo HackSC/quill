@@ -240,9 +240,11 @@ angular.module('reg')
           $scope.loading = true;
           JudgeService.getProject(id)
               .then(response => {
+                var project = response.data;
+                project.categories = project.desiredPrizes.filter(v => ($scope.user.judging.categories.indexOf(v) !== -1));
                 // Set project to show - override
                 $scope.showAll = false;
-                $scope.currentProject = response.data;
+                $scope.currentProject = project;
                 $scope.loading = false;
               }, err => {
                 $scope.loading = false;
@@ -440,6 +442,7 @@ angular.module('reg')
                 .then(response => {
                   // Set project to show
                   var project = response.data;
+                  project.categories = project.desiredPrizes.filter(v => ($scope.user.judging.categories.indexOf(v) !== -1));
                   $scope.currentProject = project;
                   $scope.loading = false;
                 }, err => {

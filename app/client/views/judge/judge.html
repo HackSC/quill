@@ -187,7 +187,7 @@
                     <a href="{{project.submissionUrl}}" target="_blank">Devpost</a>
                     <br>
                     <span ng-show="user.judging.role === 'Sponsor'">
-                      Categories: {{project.categories.join(',')}}
+                      Categories: {{project.categories.join(', ')}}
                     </span>
                     <br>
                     Comments: {{getJudgingFromEmail(project, user.email).comments}}
@@ -221,7 +221,7 @@
                 <p>Time on: {{formatTimeShort(currentProject.time)}}</p>
               </div>
               <div ng-show="user.judging.role == 'Sponsor'">
-                Categories: {{currentProject.categories.join(',')}}
+                Categories: {{currentProject.categories.join(', ')}}
                 <br>
                 Table {{currentProject.table}}
               </div>
