@@ -106,7 +106,7 @@ var generateData = function (settings) {
   stream.once('open', fd => {
     stream.write('Submission Title,Submission Url,Plain Description,Video,Website,File Url,Desired Prizes,Built With,Select Vertical Prize Category,Submitter Screen Name,Submitter First Name,Submitter Last Name,Submitter Email,College/Universities Of Team Members,Additional Team Member Count,...\n');
     var projects = [];
-    for (let i = 1; i <= 300; i++) {
+    for (let i = 1; i <= 150; i++) {
       let vertical = verticals[i % verticals.length];
       let category = [categories[i % categories.length], categories[(categories.length - i) % categories.length]];
       let vr = i%5 > 0 ? 'No' : 'Yes';
