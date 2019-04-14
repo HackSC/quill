@@ -199,7 +199,7 @@ JudgingController.uploadSubmissionsData = function (data, callback) {
         p.time = 0;
 
         if(!p.vr){
-          let tableNum = tableCounter + 1 + 54;
+          let tableNum = tableCounter + 1 + 53;
           if(tableNum === 78){
             tableNum = 144;
           }else if(tableNum === 86){
