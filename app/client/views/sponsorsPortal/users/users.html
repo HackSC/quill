@@ -1,0 +1,425 @@
+<div class="ui segment">
+
+  <div class="ui stackable grid">
+    <div class="twelve wide column middle aligned">
+      <div class="ui large header">
+        Filter Users
+      </div>
+
+      <p>Thank you for being a HackSC sponsor! Use this portal to apply various filters, search for skills, and more. Clicking "Export to CSV" will apply your filters and generate a CSV with all user details. If there are any difficulties, let us know!</p>
+    </div>
+
+    <div class="right aligned four wide column">
+      <a class="ui basic button" ng-href="{{csvLink()}}" target="_self">Export to CSV</a>
+    </div>
+
+    <div class="three wide column">
+      <div class="ui small header">
+        Experience
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="beginner" ng-model="filter.experience.beginner">
+        <label>Beginner</label>
+      </div>
+
+      <br/>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="intermediate" ng-model="filter.experience.intermediate">
+        <label>Intermediate</label>
+      </div>
+
+      <br/>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="advanced" ng-model="filter.experience.advanced">
+        <label>Advanced</label>
+      </div>
+    </div>
+
+    <div class="two wide column">
+      <div class="ui small header">
+        Gender
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="male" ng-model="filter.gender.male">
+        <label>Male</label>
+      </div>
+
+      <br/>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="female" ng-model="filter.gender.female">
+        <label>Female</label>
+      </div>
+    </div>
+
+    <div class="two wide column">
+      <div class="ui small header">
+        Year
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="yr2019" ng-model="filter.year.yr2019">
+        <label>2019</label>
+      </div>
+
+      <br/>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="yr2020" ng-model="filter.year.yr2020">
+        <label>2020</label>
+      </div>
+
+      <br/>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="yr2021" ng-model="filter.year.yr2021">
+        <label>2021</label>
+      </div>
+
+      <br/>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="yr2022" ng-model="filter.year.yr2022">
+        <label>2022</label>
+      </div>
+
+      <br/>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="graduate" ng-model="filter.year.yrGraduate">
+        <label>Graduate</label>
+      </div>
+    </div>
+
+    <div class="four wide column">
+      <div class="ui small header">
+        Ethnicity
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="whiteCaucasian" ng-model="filter.ethnicity.whiteCaucasian">
+
+        <label>White / Caucasian</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="blackOrAfricanAmerican" ng-model="filter.ethnicity.blackOrAfricanAmerican">
+
+        <label>Black or African American</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="nativeAmerican" ng-model="filter.ethnicity.nativeAmerican">
+
+        <label>Native American or Alaska Native</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="asianPacificIslander" ng-model="filter.ethnicity.asianPacificIslander">
+
+        <label>Asian / Pacific Islander</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="hispanic" ng-model="filter.ethnicity.hispanic">
+
+        <label>Hispanic / Latinx</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="multiracial" ng-model="filter.ethnicity.multiracial">
+
+        <label>Multiracial / Other</label>
+      </div>
+    </div>
+
+    <div class="two wide column">
+      <div class="ui small header">
+        Status
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="submitted" ng-model="filter.status.submitted">
+
+        <label>Submitted</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="submitted" ng-model="filter.status.admitted">
+
+        <label>Admitted</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="submitted" ng-model="filter.status.waitlisted">
+
+        <label>Waitlisted</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="submitted" ng-model="filter.status.confirmed">
+
+        <label>Confirmed</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="submitted" ng-model="filter.status.checkedIn">
+
+        <label>Checked In</label>
+      </div>
+    </div>
+
+    <div class="two wide column">
+      <div class="ui small header">
+        Role
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="developer" ng-model="filter.role.developer">
+
+        <label>Developer</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="designer" ng-model="filter.role.designer">
+
+        <label>Designer</label>
+      </div>
+
+      <div class="ui checkbox">
+        <input type="checkbox" name="productManager" ng-model="filter.role.productManager">
+
+        <label>Product Manager</label>
+      </div>
+    </div>
+
+    <div class="sixteen wide column">
+      <div class="ui header">
+        Skills
+      </div>
+      <div class="ui form">
+        <div class="field">
+          <div class="ui icon fluid input">
+            <input type="text"
+                   placeholder="Search..."
+                   ng-model="filter.skills"
+                   ng-model-options="{debounce: 300}">
+              <i class="search icon"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="thirteen wide column">
+      <div class="ui header">
+        Search
+      </div>
+      <div class="ui form">
+        <div class="field">
+          <div class="ui icon fluid input">
+            <input type="text"
+                   placeholder="Search..."
+                   ng-model="queryText"
+                   ng-model-options="{debounce: 300}">
+              <i class="search icon"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="three wide column">
+      <div class="ui form">
+        <div class="ui header"> Sort </div>
+
+        <div class="field">
+          <select
+                  ng-model="sortOption" ng-change="sortBy(sortOption)">
+            <option ng-repeat="option in sortOptions" ng-value="option.value + ':'+ option.order">{{option.name}}</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="sixteen wide column">
+      <div class="ui divider"></div>
+
+      <button
+        ng-repeat="page in pages"
+        ng-class="page == currentPage ? 'active pink' : ''"
+        ng-click="goToPage(page)"
+        class="ui icon basic page button">
+        {{page}}
+      </button>
+    </div>
+  </div>
+</div>
+
+  <div class="ui stackable grid">
+    <div id="table-container" class="sixteen wide column">
+      <div class="ui header">
+        Users
+      </div>
+      <div class="ui long user modal">
+        <i class="close icon"></i>
+        <div class="header">
+          {{selectedUser.profile.name ? selectedUser.profile.name : selectedUser.email}}
+          <span
+            ng-show="selectedUser.admin">
+            (Admin)
+          </span>
+        </div>
+        <div class="content">
+
+          <div>
+            <div class="ui header">
+              Status:
+              <div class="ui label purple" ng-if="selectedUser.status.submitted">
+                Submitted
+              </div>
+
+              <div class="ui label pink" ng-if="selectedUser.status.admitted">
+                Admitted
+              </div>
+
+              <div class="ui label red" ng-if="selectedUser.status.rejected">
+                Rejected
+              </div>
+
+              <div class="ui label blue" ng-if="selectedUser.status.waitlisted">
+                Waitlisted
+              </div>
+
+              <div class="ui label green" ng-if="selectedUser.status.confirmed">
+                Confirmed
+              </div>
+
+              <div class="ui label white" ng-if="selectedUser.status.checkedIn">
+                Checked In
+              </div>
+            </div>
+          </div>
+
+          <div ng-repeat="section in selectedUser.sections">
+            <div class="ui divider"></div>
+
+            <h3> {{section.title}} </h3>
+
+            <p ng-repeat="field in section.fields">
+              <strong> {{field.name}}: </strong>
+
+              <span ng-show="field.type === 'boolean'">
+                <i class="red circle remove icon" ng-show="!field.value"></i>
+                <i class="green circle check icon" ng-show="field.value"></i>
+              </span>
+
+              <span ng-if="field.type === 'link'">
+                <a target="_blank" href="{{field.value}}">{{field.title}}</a>
+              </span>
+
+              <span ng-if="field.type == null">
+                {{field.value}}
+              </span>
+
+            </p>
+
+          </div>
+
+        </div>
+      </div>
+
+      <table
+        class="ui celled selectable compact users table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>E-mail address</th>
+            <th>School</th>
+            <th>Year</th>
+            <th>S / A / C</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            ng-click="selectUser(user)"
+            ng-repeat="user in users"
+            ng-class="rowClass(user)">
+
+            <!--Name-->
+            <td>
+              <strong>
+                {{user.profile.name}}
+                &nbsp;
+              </strong>
+            </td>
+
+            <!--Email-->
+            <td>{{user.email}}</td>
+
+            <!--School-->
+            <td>{{user.profile.school}}</td>
+
+            <!--Year-->
+            <td
+              class="collapsing">
+              {{user.profile.year}}
+            </td>
+
+            <!--Statuses-->
+            <td
+              class="collapsing">
+
+              <!-- Submitted -->
+              <i
+                ng-if="user.status.submitted"
+                class="green check circle icon">
+              </i>
+              <i
+                ng-if="!user.status.submitted"
+                class="red remove circle icon">
+              </i>
+
+              <!-- Admission Status -->
+              <i
+                ng-if="user.status.admitted && !user.status.rejected && !user.status.waitlisted"
+                class="green check circle icon">
+              </i>
+              <i
+                ng-if="!user.status.admitted && user.status.rejected && !user.status.waitlisted"
+                class="red remove circle icon">
+              </i>
+              <i
+                ng-if="!user.status.admitted && !user.status.rejected && user.status.waitlisted"
+                class="blue wait circle icon">
+              </i>
+              <i
+                ng-if="!user.status.admitted && !user.status.rejected && !user.status.waitlisted"
+                class="thin circle icon">
+              </i>
+
+              <!-- Confirmed -->
+              <i
+                ng-if="!user.status.confirmed && !user.status.declined"
+                class="circle thin icon">
+              </i>
+              <i
+                ng-if="user.status.confirmed && !user.status.declined"
+                class="green check circle icon">
+              </i>
+              <i
+                ng-if="user.status.declined"
+                class="red remove circle icon">
+              </i>
+
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+</div>

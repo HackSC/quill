@@ -40,6 +40,55 @@ module.exports = function(router) {
   }
 
   /**
+   * Using the access token provided, check to make sure that
+   * you are, indeed, a sponsor.
+   */
+  function isSponsor(req, res, next){
+
+    var token = getToken(req);
+
+    UserController.getByToken(token, function(err, user){
+
+      if (err) {
+        return res.status(500).send(err);
+      }
+
+      if (user && user.sponsor){
+        req.user = user;
+        return next();
+      }
+
+      return res.status(401).send({
+        message: 'Get outta here, punk!'
+      });
+
+    });
+  }
+
+  /**
+   * Using the access token provided, check to make sure that
+   * you are, indeed, a sponsor OR admin
+   */
+  function isSponsorOrAdmin(req, res, next){
+    var token = getToken(req);
+
+    UserController.getByToken(token, function(err, user){
+
+      if (err || !user) {
+        return res.status(500).send(err);
+      }
+
+      if (user.admin || user.sponsor){
+        return next();
+      }
+
+      return res.status(401).send({
+        message: 'Get outta here, punk!'
+      });
+    });
+  }
+
+  /**
    * [Users API Only]
    *
    * Check that the id param matches the id encoded in the
@@ -146,12 +195,12 @@ module.exports = function(router) {
   // ---------------------------------------------
 
   /**
-   * [ADMIN ONLY]
+   * [SPONSOR/ADMIN ONLY]
    *
    * GET - Get all users, or a page at a time.
    * ex. Paginate with ?page=0&size=100
    */
-  router.get('/users', isAdmin, function(req, res){
+  router.get('/users', isSponsorOrAdmin, function(req, res){
     var query = req.query;
     var admin = req.user;
 
@@ -167,9 +216,37 @@ module.exports = function(router) {
   });
 
   /**
-   * [ADMIN ONLY]
+   * [SPONSOR/ADMIN ONLY]
+   *
+   * GET - Get a CSV of users with filters applied
    */
-  router.get('/users/stats', isAdmin, function(req, res){
+  router.get('/users/csv', function(req, res, next) {
+    var token = req.query.token;
+
+    UserController.getByToken(token, function(err, user){
+      if (err || !user) {
+        return res.status(500).send(err);
+      }
+
+      if (user.admin || user.sponsor){
+        return next();
+      }
+
+      return res.status(401).send({
+        message: 'Get outta here, punk!'
+      });
+    });
+  }, function(req, res){
+    var query = req.query;
+    var admin = req.user;
+
+    UserController.getCSV(query, admin, req, res);
+  });
+
+  /**
+   * [SPONSOR/ADMIN ONLY]
+   */
+  router.get('/users/stats', isSponsorOrAdmin, function(req, res){
     UserController.getStats(defaultResponse(req, res));
   });
 
@@ -358,6 +435,16 @@ module.exports = function(router) {
     var user = req.user;
     UserController.makeAdminById(id, user, defaultResponse(req, res));
   });
+
+  /**
+   * Make user a sponsor
+   */
+  router.post('/users/:id/makesponsor', isAdmin, function(req, res){
+    var id = req.params.id;
+    var user = req.user;
+    UserController.makeSponsorById(id, user, defaultResponse(req, res));
+  });
+
 
   /**
    * Demote user

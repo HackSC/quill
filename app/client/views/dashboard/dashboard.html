@@ -5,7 +5,7 @@
 
   <div class="ui stackable centered page grid">
     <div class="column">
-      <div class="ui status segment">
+      <div class="ui status segment" ng-if="!user.sponsor">
         <div class="small title">
           Your status:
         </div>
@@ -492,6 +492,22 @@
 
       </div>
 
+      <div class="ui status segment" ng-if="user.sponsor">
+        <div class="small title">
+          Hello {{user.profile.firstName}}!
+        </div>
+
+        <div class="description"">
+          <p>
+            {{ DASHBOARD.SPONSOR_INTRO }}
+          </p>
+
+          <div class="ui buttonPrimary button"
+               ui-sref="app.sponsors.stats">
+            Access Sponsor Portal
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

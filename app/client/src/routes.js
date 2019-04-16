@@ -21,6 +21,9 @@ const SidebarCtrl = require('../views/sidebar/sidebarCtrl.js');
 const TeamCtrl = require('../views/team/teamCtrl.js');
 const JudgeCtrl = require('../views/judge/judgeCtrl.js');
 const VerifyCtrl = require('../views/verify/verifyCtrl.js');
+const SponsorsCtrl = require('../views/sponsorsPortal/sponsorsPortalCtrl.js');
+const SponsorsStatsCtrl = require('../views/sponsorsPortal/stats/statsCtrl.js');
+const SponsorsUsersCtrl = require('../views/sponsorsPortal/users/usersCtrl.js');
 
 angular.module('reg')
   .config([
@@ -126,6 +129,29 @@ angular.module('reg')
             return SettingsService.getPublicSettings();
           }
         }
+      })
+      .state('app.sponsors', {
+        views: {
+          '': {
+            templateUrl: "views/sponsorsPortal/sponsorsPortal.html",
+            controller: 'SponsorsCtrl'
+          }
+        }
+      })
+      .state('app.sponsors.stats', {
+        url: "/sponsors",
+        templateUrl: "views/sponsorsPortal/stats/stats.html",
+        controller: 'SponsorsStatsCtrl'
+      })
+      .state('app.sponsors.users', {
+        url: "/sponsors/users?" +
+          '&page' +
+          '&size' +
+          '&sort' +
+          '&query' +
+          '&filter',
+        templateUrl: "views/sponsorsPortal/users/users.html",
+        controller: 'SponsorsUsersCtrl'
       })
       .state('app.admin', {
         views: {

@@ -322,6 +322,13 @@ var schema = new mongoose.Schema({
         default: false,
     },
 
+    /* Allow sponsors to register, get access to sponsor tab */
+    sponsor: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+
     timestamp: {
         type: Number,
         required: true,
