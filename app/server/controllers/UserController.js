@@ -341,7 +341,7 @@ UserController.getPage = function (query, admin, callback) {
 
     findQuery["$and"] = skillQueriesRegEx;
   }
-  
+
   var getStatus = function (user) {
 
     if(user.status.checkedIn) {
@@ -572,7 +572,7 @@ UserController.getCSV = function (query, admin, req, res) {
         var csvResponse = "";
 
         // Return CSV to user
-        csvResponse += 'Email,Name,Gender,Ethnicity,School,Year,Major,Experience,Resume,Skills,Role,LinkedIn,GitHub,Other Links\n';
+        csvResponse += 'Email,Name,Gender,Ethnicity,School,Year,Major,Experience,Resume,Skills,Role,LinkedIn,GitHub,Other Links,Submitted,Admitted,Waitlisted,Confirmed,Checked In\n';
 
         users.forEach(user => {
           var rolesl = [];
@@ -599,7 +599,12 @@ UserController.getCSV = function (query, admin, req, res) {
             roles,
             user.profile.linkedin,
             user.profile.github,
-            user.profile.other
+            user.profile.other,
+            user.status.submitted ? (1) : (0),
+            user.status.admitted ? (1) : (0),
+            user.status.waitlisted ? (1) : (0),
+            user.status.confirmed ? (1) : (0),
+            user.status.checkedIn ? (1) : (0)
           ];
 
           info = info.map(val => {
